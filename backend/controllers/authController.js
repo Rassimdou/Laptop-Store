@@ -31,7 +31,8 @@ export const register = async (req, res) => {
       name,
       email,
       phone,
-      password: hashedPassword
+      password: hashedPassword,
+      role: 'user' 
     });
 
     await newClient.save();
@@ -66,7 +67,9 @@ export const login = async (req, res) => {
 
     // Generate JWT
     const token = jwt.sign(
-      { id: client._id },
+      { id: client._id ,
+        role: client.role
+      },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
