@@ -23,7 +23,7 @@ export default function ProductsPage() {
   const fetchProducts = async () => {
     try {
       console.log('Fetching products...');
-      const response = await axios.get('/api/products');
+      const response = await axios.get('http://localhost:5000/api/products');
       console.log('Full response:', response);
       console.log('Response data:', response.data);
       console.log('Is response.data an array?', Array.isArray(response.data));
