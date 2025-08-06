@@ -1,127 +1,102 @@
-import React, { useState } from "react"
-import { Link } from "react-router-dom"
-import { Button } from "../components/ui/button"
-import { Card, CardContent } from "../components/ui/card"
-import { Badge } from "../components/ui/badge"
-import { Input } from "../components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
-import { Slider } from "../components/ui/slider"
-import { ShoppingCart, Star, Filter, Grid, List, Search } from 'lucide-react'
-
-const laptops = [
-  {
-    id: 1,
-    name: 'MacBook Pro 16"',
-    brand: "Apple",
-    price: 2499,
-    originalPrice: 2799,
-    image: "https://via.placeholder.com/400x300?text=MacBook+Pro",
-    rating: 4.9,
-    reviews: 1247,
-    specs: ["M3 Pro Chip", "32GB RAM", "1TB SSD", '16" Liquid Retina'],
-    category: "Professional",
-    inStock: true,
-  },
-  {
-    id: 2,
-    name: "Dell XPS 13 Plus",
-    brand: "Dell",
-    price: 1299,
-    originalPrice: 1499,
-    image: "https://via.placeholder.com/400x300?text=Dell+XPS+13",
-    rating: 4.7,
-    reviews: 892,
-    specs: ["Intel i7-13700H", "16GB RAM", "512GB SSD", '13.4" OLED'],
-    category: "Ultrabook",
-    inStock: true,
-  },
-  {
-    id: 3,
-    name: "ASUS ROG Strix G15",
-    brand: "ASUS",
-    price: 1899,
-    originalPrice: 2199,
-    image: "https://via.placeholder.com/400x300?text=ASUS+ROG",
-    rating: 4.8,
-    reviews: 634,
-    specs: ["AMD Ryzen 9", "32GB RAM", "1TB SSD", "RTX 4070"],
-    category: "Gaming",
-    inStock: true,
-  },
-  {
-    id: 4,
-    name: "ThinkPad X1 Carbon",
-    brand: "Lenovo",
-    price: 1599,
-    originalPrice: 1899,
-    image: "https://via.placeholder.com/400x300?text=ThinkPad+X1",
-    rating: 4.6,
-    reviews: 445,
-    specs: ["Intel i7-13700U", "16GB RAM", "512GB SSD", '14" 2.8K'],
-    category: "Business",
-    inStock: false,
-  },
-  {
-    id: 5,
-    name: "HP Spectre x360",
-    brand: "HP",
-    price: 1399,
-    originalPrice: 1599,
-    image: "https://via.placeholder.com/400x300?text=HP+Spectre",
-    rating: 4.5,
-    reviews: 328,
-    specs: ["Intel i7-1355U", "16GB RAM", "512GB SSD", '13.5" Touch'],
-    category: "2-in-1",
-    inStock: true,
-  },
-  {
-    id: 6,
-    name: "MSI Creator Z16P",
-    brand: "MSI",
-    price: 2299,
-    originalPrice: 2599,
-    image: "https://via.placeholder.com/400x300?text=MSI+Creator",
-    rating: 4.7,
-    reviews: 156,
-    specs: ["Intel i9-13900H", "32GB RAM", "1TB SSD", "RTX 4060"],
-    category: "Creative",
-    inStock: true,
-  },
-]
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
+import { Input } from "../components/ui/input";
+import { ShoppingCart, Star, Filter, Grid, List, Search } from 'lucide-react';
+import axios from 'axios';
 
 export default function ProductsPage() {
-  const [viewMode, setViewMode] = useState("grid")
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedBrand, setSelectedBrand] = useState("all")
-  const [selectedCategory, setSelectedCategory] = useState("all")
-  const [priceRange, setPriceRange] = useState([0, 3000])
-  const [sortBy, setSortBy] = useState("featured")
+  const [viewMode, setViewMode] = useState("grid");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [priceRange, setPriceRange] = useState([0, 3000]);
+  const [sortBy, setSortBy] = useState("featured");
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const filteredLaptops = laptops.filter((laptop) => {
+  // Fetch products from backend API
+  useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      console.log('Fetching products...');
+      const response = await axios.get('/api/products');
+      console.log('Full response:', response);
+      console.log('Response data:', response.data);
+      console.log('Is response.data an array?', Array.isArray(response.data));
+      
+      setProducts(response.data);
+      setLoading(false);
+    } catch (err) {
+      console.error('API Error:', err);
+      console.error('Error response:', err.response?.data);
+      setError('Failed to load products');
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, []);
+  const filteredProducts = products.filter((product) => {
     const matchesSearch =
-      laptop.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      laptop.brand.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesBrand = selectedBrand === "all" || laptop.brand === selectedBrand
-    const matchesCategory = selectedCategory === "all" || laptop.category === selectedCategory
-    const matchesPrice = laptop.price >= priceRange[0] && laptop.price <= priceRange[1]
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.brand.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesBrand = selectedBrand === "all" || product.brand === selectedBrand;
+    const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
+    const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
 
-    return matchesSearch && matchesBrand && matchesCategory && matchesPrice
-  })
+    return matchesSearch && matchesBrand && matchesCategory && matchesPrice;
+  });
 
-  const sortedLaptops = [...filteredLaptops].sort((a, b) => {
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortBy) {
       case "price-low":
-        return a.price - b.price
+        return a.price - b.price;
       case "price-high":
-        return b.price - a.price
+        return b.price - a.price;
       case "rating":
-        return b.rating - a.rating
+        return b.rating - a.rating;
       case "name":
-        return a.name.localeCompare(b.name)
+        return a.name.localeCompare(b.name);
       default:
-        return 0
+        return 0;
     }
-  })
+  });
+
+  // Extract unique brands and categories for filters
+  const uniqueBrands = [...new Set(products.map(product => product.brand))];
+  const uniqueCategories = [...new Set(products.map(product => product.category))];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-700">Loading products...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center text-red-500">
+          <h3 className="text-xl font-medium">Error loading products</h3>
+          <p className="mt-2">{error}</p>
+          <Button 
+            className="mt-4"
+            onClick={() => window.location.reload()}
+          >
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -176,12 +151,9 @@ export default function ProductsPage() {
                     className="w-full p-2 border border-gray-300 rounded-md"
                   >
                     <option value="all">All Brands</option>
-                    <option value="Apple">Apple</option>
-                    <option value="Dell">Dell</option>
-                    <option value="ASUS">ASUS</option>
-                    <option value="Lenovo">Lenovo</option>
-                    <option value="HP">HP</option>
-                    <option value="MSI">MSI</option>
+                    {uniqueBrands.map(brand => (
+                      <option key={brand} value={brand}>{brand}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -194,12 +166,9 @@ export default function ProductsPage() {
                     className="w-full p-2 border border-gray-300 rounded-md"
                   >
                     <option value="all">All Categories</option>
-                    <option value="Gaming">Gaming</option>
-                    <option value="Business">Business</option>
-                    <option value="Professional">Professional</option>
-                    <option value="Ultrabook">Ultrabook</option>
-                    <option value="2-in-1">2-in-1</option>
-                    <option value="Creative">Creative</option>
+                    {uniqueCategories.map(category => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -227,7 +196,7 @@ export default function ProductsPage() {
             {/* Toolbar */}
             <div className="flex items-center justify-between mb-6 bg-white p-4 rounded-lg shadow-sm">
               <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-600">{sortedLaptops.length} products found</span>
+                <span className="text-sm text-gray-600">{sortedProducts.length} products found</span>
               </div>
 
               <div className="flex items-center space-x-4">
@@ -264,27 +233,33 @@ export default function ProductsPage() {
 
             {/* Products */}
             <div className={viewMode === "grid" ? "grid md:grid-cols-2 xl:grid-cols-3 gap-6" : "space-y-6"}>
-              {sortedLaptops.map((laptop, index) => (
+              {sortedProducts.map((product) => (
                 <Card
-                  key={laptop.id}
+                  key={product._id}
                   className={`group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-200 bg-white ${
                     viewMode === "list" ? "flex" : ""
-                  } ${!laptop.inStock ? "opacity-75" : ""}`}
+                  } ${product.stock <= 0 ? "opacity-75" : ""}`}
                 >
                   <div className={`relative overflow-hidden ${viewMode === "list" ? "w-48 flex-shrink-0" : ""}`}>
-                    {!laptop.inStock && (
+                    {product.stock <= 0 && (
                       <Badge className="absolute top-3 left-3 z-10 bg-red-500 text-white shadow-sm">Out of Stock</Badge>
                     )}
                     <div
                       className={`bg-gray-100 ${viewMode === "list" ? "w-full h-full" : "w-full h-48"} flex items-center justify-center`}
                     >
-                      <img
-                        src={laptop.image || "/placeholder.svg"}
-                        alt={laptop.name}
-                        className={`object-cover group-hover:scale-105 transition-transform duration-300 ${
-                          viewMode === "list" ? "w-full h-full" : "w-full h-full"
-                        }`}
-                      />
+                      {product.imageUrl ? (
+                        <img
+                          src={product.imageUrl}
+                          alt={product.name}
+                          className={`object-cover group-hover:scale-105 transition-transform duration-300 ${
+                            viewMode === "list" ? "w-full h-full" : "w-full h-full"
+                          }`}
+                        />
+                      ) : (
+                        <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-full flex items-center justify-center text-gray-500">
+                          No Image
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -292,66 +267,44 @@ export default function ProductsPage() {
                     <div className="space-y-3">
                       <div className="flex items-start justify-between">
                         <Badge variant="secondary" className="text-xs font-medium bg-gray-100 text-gray-700">
-                          {laptop.category}
+                          {product.category}
                         </Badge>
-                        <span className="text-sm text-gray-500 font-medium">{laptop.brand}</span>
+                        <span className="text-sm text-gray-500 font-medium">{product.brand}</span>
                       </div>
 
                       <div className="space-y-2">
                         <h3 className="text-lg font-semibold text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">
-                          {laptop.name}
+                          {product.name}
                         </h3>
-                        <div className="flex items-center space-x-2">
-                          <div className="flex items-center">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`w-4 h-4 ${
-                                  i < Math.floor(laptop.rating) ? "text-yellow-400 fill-current" : "text-gray-300"
-                                }`}
-                              />
-                            ))}
-                          </div>
-                          <span className="text-sm text-gray-600">({laptop.reviews})</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-1">
-                        {laptop.specs.slice(0, 3).map((spec, i) => (
-                          <div key={i} className="text-sm text-gray-600 flex items-center">
-                            <span className="w-1 h-1 bg-gray-400 rounded-full mr-2"></span>
-                            {spec}
-                          </div>
-                        ))}
+                        <p className="text-sm text-gray-600 line-clamp-2">{product.description}</p>
                       </div>
 
                       <div className="pt-3 border-t border-gray-100">
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="space-y-1">
-                            <div className="flex items-baseline space-x-2">
-                              <span className="text-2xl font-bold text-gray-900">${laptop.price}</span>
-                              <span className="text-sm text-gray-500 line-through">${laptop.originalPrice}</span>
-                            </div>
-                            <div className="text-sm text-green-600 font-medium">
-                              Save ${laptop.originalPrice - laptop.price}
-                            </div>
+                        <div className="mb-3">
+                          <div className="flex items-baseline space-x-2">
+                            <span className="text-2xl font-bold text-gray-900">${product.price}</span>
+                          </div>
+                          <div className="text-sm text-gray-500 mt-1">
+                            {product.stock > 0 
+                              ? `${product.stock} in stock` 
+                              : "Out of stock"}
                           </div>
                         </div>
 
                         <div className="flex space-x-2">
-                          <Link to={`/products/${laptop.id}`} className="flex-1">
+                          <Link to={`/products/${product._id}`} className="flex-1">
                             <Button size="sm" variant="outline" className="w-full text-sm bg-transparent">
                               View Details
                             </Button>
                           </Link>
-                          <Link to={`/cart?productId=${laptop.id}&quantity=1`} className="flex-1">
+                          <Link to={`/cart?productId=${product._id}&quantity=1`} className="flex-1">
                             <Button
                               size="sm"
                               className="w-full bg-blue-600 hover:bg-blue-700 text-sm"
-                              disabled={!laptop.inStock}
+                              disabled={product.stock <= 0}
                             >
                               <ShoppingCart className="w-4 h-4 mr-1" />
-                              {laptop.inStock ? "Order" : "Sold Out"}
+                              {product.stock > 0 ? "Add to Cart" : "Sold Out"}
                             </Button>
                           </Link>
                         </div>
@@ -362,7 +315,7 @@ export default function ProductsPage() {
               ))}
             </div>
 
-            {sortedLaptops.length === 0 && (
+            {sortedProducts.length === 0 && !loading && (
               <div className="text-center py-12">
                 <div className="text-gray-400 text-lg">No laptops found matching your criteria</div>
                 <Button
@@ -382,5 +335,5 @@ export default function ProductsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

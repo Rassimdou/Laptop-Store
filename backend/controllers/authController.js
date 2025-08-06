@@ -8,7 +8,7 @@ dotenv.config();
 const router = express.Router();
 
 // Register a new client
-export const register = async (req, res) => {
+export  const register = async (req, res) => {
   const { name, email, phone, password } = req.body;
 
   // Basic input validation
@@ -108,3 +108,4 @@ export const logout = (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+export default router;

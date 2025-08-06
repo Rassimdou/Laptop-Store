@@ -4,9 +4,6 @@ export const getAllProducts = async (req, res) => {
     try {
         const allProducts = await Product.find();  
         
-        if (!allProducts || allProducts.length === 0) {
-            return res.status(404).json({ message: 'No products found' });
-        } 
         
         return res.status(200).json(allProducts);
         
