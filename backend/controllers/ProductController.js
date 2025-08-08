@@ -96,3 +96,15 @@ export const deleteProduct = async (req, res) => {  // Fixed function name
         return res.status(500).json({ message: 'Server error', error: error.message });
     }
 }
+
+
+// Get latest products
+export const getLatestProducts = async (req, res) => {
+    try {
+        const latestProducts = await Product.find().sort({ createdAt: -1 }).limit(4);  // Get the 5 most recent products
+        return res.status(200).json(latestProducts);
+        
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+}

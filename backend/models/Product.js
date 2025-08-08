@@ -9,7 +9,8 @@ export const ProductSchema = new mongoose.Schema({
   stock: { type: Number, required: true, default: 0 },
   imageUrl: { type: String, required: true },
   available: { type: Boolean, default: true },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  
 });
 
 export default mongoose.model('Product', ProductSchema);

@@ -4,7 +4,8 @@ import {
   getProductById,
   addProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getLatestProducts
 } from '../controllers/productController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
@@ -12,6 +13,7 @@ const router = express.Router();
 
 // Public routes
 router.get('/', getAllProducts);
+router.get('/latest', getLatestProducts);
 router.get('/:id', getProductById);
 
 // Admin protected routes

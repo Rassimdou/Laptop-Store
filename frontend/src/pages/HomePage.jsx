@@ -1,59 +1,29 @@
-import React, { useState } from "react"
+import React, { useEffect , useState } from "react"
 import { Link } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { Card, CardContent } from "../components/ui/card"
 import { Badge } from "../components/ui/badge"
 import { ShoppingCart, Star, Zap, Shield, Truck, ArrowRight, Menu, X } from 'lucide-react'
 
-const featuredLaptops = [
-  {
-    id: 1,
-    name: 'MacBook Pro 16"',
-    price: 2499,
-    originalPrice: 2799,
-    image: "https://via.placeholder.com/400x300?text=MacBook+Pro",
-    rating: 4.9,
-    reviews: 1247,
-    specs: ["M3 Pro Chip", "32GB RAM", "1TB SSD", '16" Liquid Retina'],
-    badge: "Best Seller",
-  },
-  {
-    id: 2,
-    name: "Dell XPS 13 Plus",
-    price: 1299,
-    originalPrice: 1499,
-    image: "https://via.placeholder.com/400x300?text=Dell+XPS+13",
-    rating: 4.7,
-    reviews: 892,
-    specs: ["Intel i7-13700H", "16GB RAM", "512GB SSD", '13.4" OLED'],
-    badge: "New Arrival",
-  },
-  {
-    id: 3,
-    name: "ASUS ROG Strix G15",
-    price: 1899,
-    originalPrice: 2199,
-    image: "https://via.placeholder.com/400x300?text=ASUS+ROG",
-    rating: 4.8,
-    reviews: 634,
-    specs: ["AMD Ryzen 9", "32GB RAM", "1TB SSD", "RTX 4070"],
-    badge: "Gaming",
-  },
-  {
-    id: 4,
-    name: "ThinkPad X1 Carbon",
-    price: 1599,
-    originalPrice: 1899,
-    image: "https://via.placeholder.com/400x300?text=ThinkPad+X1",
-    rating: 4.6,
-    reviews: 445,
-    specs: ["Intel i7-13700U", "16GB RAM", "512GB SSD", '14" 2.8K'],
-    badge: "Business",
-  },
-]
+import axios from 'axios'
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [featuredLaptops, setFeaturedLaptops] = useState([])
+
+
+      useEffect(() => {
+      const featuredLaptops = async () => {
+        try {
+          const response = await axios.get('http://localhost:5000/api/products/latest') // Adjust the endpoint as needed
+          setFeaturedLaptops(response.data);
+         
+        } catch (error) {
+          console.error('Error fetching featured laptops:', error)
+        }
+      }
+      featuredLaptops()
+      }, [])
 
   return (
     <div className="min-h-screen bg-white">
@@ -204,14 +174,7 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  <div className="space-y-1">
-                    {laptop.specs.slice(0, 2).map((spec, i) => (
-                      <div key={i} className="text-sm text-gray-600 flex items-center">
-                        <span className="w-1 h-1 bg-gray-400 rounded-full mr-2"></span>
-                        {spec}
-                      </div>
-                    ))}
-                  </div>
+                 
 
                   <div className="pt-3 border-t border-gray-100">
                     <div className="flex items-center justify-between mb-3">

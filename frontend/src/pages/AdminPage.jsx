@@ -357,12 +357,12 @@ export default function AdminPage() {
 
       {/* Order Detail Modal */}
       {selectedOrder && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <CardHeader className="border-b">
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-custom flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-gray-900 text-white">
+            <CardHeader className="border-b border-gray-700">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl">Order Details - {selectedOrder.id}</CardTitle>
-                <Button variant="ghost" size="icon" onClick={() => setSelectedOrder(null)}>
+                <CardTitle className="text-2xl text-white">Order Details - {selectedOrder.id}</CardTitle>
+                <Button variant="ghost" size="icon" onClick={() => setSelectedOrder(null)} className="text-white hover:bg-gray-700">
                   <XCircle className="w-5 h-5" />
                 </Button>
               </div>
@@ -370,41 +370,41 @@ export default function AdminPage() {
             <CardContent className="p-6 space-y-6">
               {/* Customer Info */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Customer Information</h3>
+                <h3 className="text-lg font-semibold text-white">Customer Information</h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-600">Name</label>
-                    <p className="text-gray-900">{selectedOrder.customer.name}</p>
+                    <label className="text-sm font-medium text-gray-400">Name</label>
+                    <p className="text-white">{selectedOrder.customer.name}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-600">Email</label>
-                    <p className="text-gray-900">{selectedOrder.customer.email}</p>
+                    <label className="text-sm font-medium text-gray-400">Email</label>
+                    <p className="text-white">{selectedOrder.customer.email}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-600">Phone</label>
-                    <p className="text-gray-900">{selectedOrder.customer.phone}</p>
+                    <label className="text-sm font-medium text-gray-400">Phone</label>
+                    <p className="text-white">{selectedOrder.customer.phone}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-600">Order Date</label>
-                    <p className="text-gray-900">{selectedOrder.date}</p>
+                    <label className="text-sm font-medium text-gray-400">Order Date</label>
+                    <p className="text-white">{selectedOrder.date}</p>
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Shipping Address</label>
-                  <p className="text-gray-900">{selectedOrder.address}</p>
+                  <label className="text-sm font-medium text-gray-400">Shipping Address</label>
+                  <p className="text-white">{selectedOrder.address}</p>
                 </div>
               </div>
 
               {/* Order Info */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Order Information</h3>
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="text-lg font-semibold text-white">Order Information</h3>
+                <div className="bg-gray-800 p-4 rounded-lg">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium">{selectedOrder.product}</span>
-                    <span className="text-gray-600">Qty: {selectedOrder.quantity}</span>
+                    <span className="font-medium text-white">{selectedOrder.product}</span>
+                    <span className="text-gray-300">Qty: {selectedOrder.quantity}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">${selectedOrder.total.toLocaleString()}</span>
+                    <span className="text-2xl font-bold text-white">${selectedOrder.total.toLocaleString()}</span>
                     <Badge className={`${getStatusColor(selectedOrder.status)} flex items-center space-x-1`}>
                       {getStatusIcon(selectedOrder.status)}
                       <span className="capitalize">{selectedOrder.status}</span>
@@ -415,7 +415,7 @@ export default function AdminPage() {
 
               {/* Actions */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Actions</h3>
+                <h3 className="text-lg font-semibold text-white">Actions</h3>
                 <div className="flex flex-wrap gap-3">
                   <Button
                     className="bg-green-600 hover:bg-green-700"
@@ -433,17 +433,17 @@ export default function AdminPage() {
                     <Package className="w-4 h-4 mr-2" />
                     Mark as Shipped
                   </Button>
-                  <Button variant="outline" className="text-green-600 hover:text-green-700 bg-transparent">
+                  <Button variant="outline" className="text-green-400 border-green-600 hover:text-green-500 hover:bg-green-900 bg-transparent">
                     <Phone className="w-4 h-4 mr-2" />
                     Call Customer
                   </Button>
-                  <Button variant="outline" className="text-blue-600 hover:text-blue-700 bg-transparent">
+                  <Button variant="outline" className="text-blue-400 border-blue-600 hover:text-blue-500 hover:bg-blue-900 bg-transparent">
                     <Mail className="w-4 h-4 mr-2" />
                     Send Email
                   </Button>
                   <Button
                     variant="outline"
-                    className="text-red-600 hover:text-red-700 bg-transparent"
+                    className="text-red-400 border-red-600 hover:text-red-500 hover:bg-red-900 bg-transparent"
                     onClick={() => updateOrderStatus(selectedOrder.id, "cancelled")}
                   >
                     <XCircle className="w-4 h-4 mr-2" />
