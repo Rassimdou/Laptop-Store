@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button } from "../../components/ui/button"
 import StatsCards from "./StatsCards.jsx"
 import TabNavigation from "./TabNavigation.jsx"
@@ -7,71 +7,29 @@ import ProductsTab from "./ProductsTab.jsx"
 import CustomersTab from "./CustomersTab.jsx"
 import AnalyticsTab from "./AnalytcsTab.jsx"
 import OrderDetailModal from "./OrderDetailModal.jsx"
+ // Sample data, replace with actual API call
+import axios from "axios"
 
-const orders = [
-  {
-    id: "ORD-001",
-    customer: {
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "+1 (555) 123-4567",
-    },
-    product: 'MacBook Pro 16"',
-    quantity: 1,
-    total: 2499,
-    status: "pending",
-    date: "2024-01-15",
-    address: "123 Main St, New York, NY 10001",
-  },
-  {
-    id: "ORD-002",
-    customer: {
-      name: "Jane Smith",
-      email: "jane@example.com",
-      phone: "+1 (555) 987-6543",
-    },
-    product: "Dell XPS 13 Plus",
-    quantity: 2,
-    total: 2598,
-    status: "confirmed",
-    date: "2024-01-14",
-    address: "456 Oak Ave, Los Angeles, CA 90210",
-  },
-  {
-    id: "ORD-003",
-    customer: {
-      name: "Mike Johnson",
-      email: "mike@example.com",
-      phone: "+1 (555) 456-7890",
-    },
-    product: "ASUS ROG Strix G15",
-    quantity: 1,
-    total: 1899,
-    status: "shipped",
-    date: "2024-01-13",
-    address: "789 Pine St, Chicago, IL 60601",
-  },
-  {
-    id: "ORD-004",
-    customer: {
-      name: "Sarah Wilson",
-      email: "sarah@example.com",
-      phone: "+1 (555) 321-0987",
-    },
-    product: "ThinkPad X1 Carbon",
-    quantity: 1,
-    total: 1599,
-    status: "cancelled",
-    date: "2024-01-12",
-    address: "321 Elm St, Houston, TX 77001",
-  },
-]
 
 export default function AdminPage() {
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [activeTab, setActiveTab] = useState("orders")
+  const [orders, setOrders] = useState([])
+    useEffect(() => {
+      const orders = async () => {
+        try {
+          const response = await axios.get('http://localhost:5000/api/orders') // Replace with your API endpoint
+          setOrders(response.data)
+        } catch (error) {
+          console.error("Error fetching orders:", error)
+        }
+      }
+
+      orders()
+    }, [])
+
 
   const updateOrderStatus = (orderId, newStatus) => {
     // In a real app, this would make an API call

@@ -15,22 +15,22 @@ export default function Header() {
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
               <Zap className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            <span className="text-xl font-bold text-primary">
               LaptopHub
             </span>
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link to="/" className="text-gray-700 hover:text-primary transition-colors">
               Home
             </Link>
-            <Link to="/products" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link to="/products" className="text-gray-700 hover:text-primary transition-colors">
               Products
             </Link>
-            <Link to="/about" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link to="/about" className="text-gray-700 hover:text-primary transition-colors">
               About
             </Link>
-            <Link to="/admin" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link to="/admin" className="text-gray-700 hover:text-primary transition-colors">
               Admin
             </Link>
           </div>
@@ -42,7 +42,7 @@ export default function Header() {
                 3
               </Badge>
             </Button>
-            <Button className="hidden md:flex bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+            <Button className="hidden md:flex bg-primary hover:bg-primary/90">
               Sign In
             </Button>
             <Button
@@ -60,19 +60,19 @@ export default function Header() {
       {mobileMenuOpen && (
         <div className="fixed inset-0 bg-gray-900 z-[999] p-4 pt-16 overflow-y-auto">
           <div className="px-6 space-y-2">
-            <Link to="/" className="block text-white hover:text-blue-400 transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+            <Link to="/" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
               Home
             </Link>
-            <Link to="/products" className="block text-white hover:text-blue-400 transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+            <Link to="/products" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
               Products
             </Link>
-            <Link to="/about" className="block text-white hover:text-blue-400 transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+            <Link to="/about" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
               About
             </Link>
-            <Link to="/admin" className="block text-white hover:text-blue-400 transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+            <Link to="/admin" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
               Admin
             </Link>
-            <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 mt-2">
+            <Button className="w-full bg-primary hover:bg-primary/90 mt-2">
               Sign In
             </Button>
           </div>

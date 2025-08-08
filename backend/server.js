@@ -10,7 +10,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/authRoute.js';
 import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
-
+import clientRoutes from './routes/clientRoute.js';
 
 dotenv.config();
 
@@ -39,7 +39,7 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
-
+app.use('/api/clients' , clientRoutes);
 
 
 

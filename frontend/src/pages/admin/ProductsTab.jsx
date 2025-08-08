@@ -4,6 +4,13 @@ import { Button } from "../../components/ui/button"
 import { Package } from 'lucide-react'
 
 export default function ProductsTab() {
+
+  //add new product functionality can be implemented here
+
+  
+
+
+
   return (
     <Card>
       <CardHeader>

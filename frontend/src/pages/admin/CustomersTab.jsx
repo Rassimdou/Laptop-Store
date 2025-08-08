@@ -2,8 +2,27 @@ import React from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
 import { Button } from "../../components/ui/button"
 import { Users } from 'lucide-react'
+import axios from "axios"
+
+
 
 export default function CustomersTab() {
+  const [customers, setCustomers] = React.useState([]);
+  React.useEffect(() => {
+      const Customers = async () => {
+        try {
+          const response = await axios.get('http://localhost:5000/api/clients') // Replace with your API endpoint
+          setCustomers(response.data)
+        } catch (error) {
+          console.error("Error fetching orders:", error)
+        }
+      }
+
+      customers()
+    }, [])
+
+
+
   return (
     <Card>
       <CardHeader>
