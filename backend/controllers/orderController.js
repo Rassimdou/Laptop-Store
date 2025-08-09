@@ -1,18 +1,16 @@
 import e from 'express';
-import order from '../models/order.js';
+import Order from '../models/Order.js';
 
 
 export const getAllOrders = async (req, res) => {
-try { 
-    const allOrder = await order.find();
-    res.status(200).json({orders : allOrder});
-
-}catch (error) {
+  try {
+    const allOrders = await Order.find();
+    res.status(200).json({ orders: allOrders });
+  } catch (error) {
     console.error('Error fetching orders:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-}
-
+};
 export const createOrder = async (req, res) => {
    // Assuming client ID is stored in req.client
     try {

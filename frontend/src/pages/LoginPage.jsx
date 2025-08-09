@@ -6,23 +6,54 @@ import { Button } from '../components/ui/button'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import Header from '../components/layout/header'
 import Footer from '../components/layout/footer'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState('') // Added missing error state
+
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault()
     setIsSubmitting(true)
-    // Simulate API call for login
-    console.log('Attempting to log in with:', { email, password })
-    await new Promise(resolve => setTimeout(resolve, 1500)) // Simulate network delay
-    setIsSubmitting(false)
-    alert('Login simulated! In a real app, you would handle authentication here.')
-    // Redirect or update auth state upon successful login
-  }
+    setError('') // Reset error state on new submission
+    
+    try {
+      // Send login request to the backend
+      const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      
+      // Extract token from response
+      const { token, client } = response.data;
+      
+      // Store the token in localStorage
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(client));
+
+      // Redirect to appropriate page
+     if (client.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
+    } catch (err) {
+      // Handle different error scenarios
+      if (err.response) {
+        setError(err.response.data.message || 'Login failed');
+      } else if (err.request) {
+        setError('Network error. Please try again.');
+      } else {
+        setError('An unexpected error occurred');
+        console.log('Login error:', err.message);
+      }
+    } finally {
+      setIsSubmitting(false);   
+    }
+  } // Added missing closing bracket for handleLogin function
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -36,6 +67,13 @@ export default function LoginPage() {
             </p>
           </CardHeader>
           <CardContent>
+            {/* Error message display */}
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
+                {error}
+              </div>
+            )}
+            
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-medium text-foreground">Email Address</label>

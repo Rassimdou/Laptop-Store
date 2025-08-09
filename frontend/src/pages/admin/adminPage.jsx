@@ -17,24 +17,29 @@ export default function AdminPage() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [activeTab, setActiveTab] = useState("orders")
   const [orders, setOrders] = useState([])
-    useEffect(() => {
-      const orders = async () => {
-        try {
-          const response = await axios.get('http://localhost:5000/api/orders') // Replace with your API endpoint
-          setOrders(response.data)
-        } catch (error) {
-          console.error("Error fetching orders:", error)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+ useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('/orders');
+        setOrders(response.data.orders || []);
+      } catch (err) {
+        if (err.response?.status === 403) {
+          setError('You need admin privileges to view orders');
+        } else {
+          setError('Failed to fetch orders');
+          console.error("Error fetching orders:", err);
         }
+      } finally {
+        setLoading(false);
       }
+    };
 
-      orders()
-    }, [])
+    fetchOrders();
+  }, []);
 
-
-  const updateOrderStatus = (orderId, newStatus) => {
-    // In a real app, this would make an API call
-    console.log(`Updating order ${orderId} to ${newStatus}`)
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
