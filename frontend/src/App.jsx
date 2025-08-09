@@ -6,6 +6,8 @@ import ProductDetailPage from "./pages/ProductDetailPage"
 import CartPage from "./pages/CartPage"
 import AdminPage from "./pages/admin/AdminPage"
 import AboutPage from "./pages/AboutPage"
+import LoginPage from "./pages/LoginPage" // Import LoginPage
+import RegisterPage from "./pages/RegisterPage" // Import RegisterPage
 function App() {
   return (
     <Router>
@@ -17,6 +19,8 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/about" element={<AboutPage />} />
+            <Route path="/login" element={<LoginPage />} /> {/* Add LoginPage route */}
+          <Route path="/register" element={<RegisterPage />} /> {/* Add RegisterPage route */}
         </Routes>
       </div>
     </Router>

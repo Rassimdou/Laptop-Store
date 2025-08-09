@@ -18,7 +18,7 @@ router.get('/my-orders', getUserOrders);
 
 // Admin-only routes
 router.use(admin);
-router.get('/', getAllOrders);
+router.get('/' ,getAllOrders);
 router.patch('/:id/status', updateOrderStatus);
 
 export default router;

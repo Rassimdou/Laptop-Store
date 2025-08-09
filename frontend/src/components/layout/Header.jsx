@@ -33,6 +33,16 @@ export default function Header() {
             <Link to="/admin" className="text-gray-700 hover:text-primary transition-colors">
               Admin
             </Link>
+            <Link to="/login">
+              <Button className="hidden md:flex bg-primary hover:bg-primary/90">
+                Login
+              </Button>
+            </Link>
+            <Link to="/register">
+              <Button variant="outline" className="hidden md:flex">
+                Register
+              </Button>
+            </Link>
           </div>
 
           <div className="flex items-center space-x-4">
@@ -41,9 +51,6 @@ export default function Header() {
               <Badge className="absolute -top-2 -right-2 w-5 h-5 rounded-full p-0 flex items-center justify-center text-xs">
                 3
               </Badge>
-            </Button>
-            <Button className="hidden md:flex bg-primary hover:bg-primary/90">
-              Sign In
             </Button>
             <Button
               variant="ghost"
@@ -72,9 +79,12 @@ export default function Header() {
             <Link to="/admin" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
               Admin
             </Link>
-            <Button className="w-full bg-primary hover:bg-primary/90 mt-2">
-              Sign In
-            </Button>
+            <Link to="/login" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+              Login
+            </Link>
+            <Link to="/register" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+              Register
+            </Link>
           </div>
         </div>
       )}
