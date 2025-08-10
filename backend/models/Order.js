@@ -31,6 +31,7 @@ export const OrderSchema = new mongoose.Schema({
 
   wilaya:        { type: String, required: true },
   address:       { type: String, required: true },
+  notes:         { type: String, default: '' }, // Optional notes field
   createdAt:     { type: Date, default: Date.now }
 });
 

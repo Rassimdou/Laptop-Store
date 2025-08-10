@@ -6,6 +6,10 @@ import { Button } from '../components/ui/button'
 import { Mail, Lock, User, Phone, Eye, EyeOff } from 'lucide-react'
 import Header from '../components/layout/header'
 import Footer from '../components/layout/footer'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+
+
 
 export default function RegisterPage() {
   const [name, setName] = useState('')
@@ -18,6 +22,9 @@ export default function RegisterPage() {
   const [agreeToTerms, setAgreeToTerms] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+
+
+  const navigate = useNavigate()
   const handleRegister = async (e) => {
     e.preventDefault()
     if (password !== confirmPassword) {
@@ -31,11 +38,24 @@ export default function RegisterPage() {
 
     setIsSubmitting(true)
     // Simulate API call for registration
-    console.log('Attempting to register with:', { name, email, phone, password })
-    await new Promise(resolve => setTimeout(resolve, 2000)) // Simulate network delay
-    setIsSubmitting(false)
-    alert('Registration simulated! In a real app, you would create the user account here.')
-    // Redirect to login or dashboard upon successful registration
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/register', {
+        name,
+        email,
+        phone,
+        password
+      });
+
+      if (response.status === 201) {
+        alert("Registration successful! ");
+        // Redirect to login page after successful registration
+        navigate('/');
+      }
+      
+    } catch (error) {
+        console.log('Registration error:', error);
+  
+    }
   }
 
   return (

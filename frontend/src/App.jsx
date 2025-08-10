@@ -8,8 +8,10 @@ import AdminPage from "./pages/admin/AdminPage"
 import AboutPage from "./pages/AboutPage"
 import LoginPage from "./pages/LoginPage" // Import LoginPage
 import RegisterPage from "./pages/RegisterPage" // Import RegisterPage
+
 function App() {
   return (
+    
     <Router>
       <div className="App">
         <Routes>
@@ -24,6 +26,8 @@ function App() {
         </Routes>
       </div>
     </Router>
+
+    
   )
 }
 

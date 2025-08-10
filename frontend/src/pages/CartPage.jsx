@@ -1,219 +1,160 @@
-import React, { useState, useEffect } from "react"
-import { useLocation, Link } from "react-router-dom"
-import { Button } from "../components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
-import { Input } from "../components/ui/input"
-import { ShoppingCart, User, Lock, Mail, Phone, MapPin, ArrowLeft, Eye, EyeOff } from 'lucide-react'
-
-// Mock product data - This data is now directly in the component
-const products = [
-  {
-    id: 1,
-    name: 'MacBook Pro 16"',
-    brand: "Apple",
-    price: 2499,
-    originalPrice: 2799,
-    imageUrl: "/placeholder.svg?height=300&width=400",
-    rating: 4.9,
-    reviews: 1247,
-    specs: ["M3 Pro Chip", "32GB RAM", "1TB SSD", '16" Liquid Retina'],
-    category: "Professional",
-    inStock: true,
-    stock: 15,
-    model: "MBP16-M3-2024", // Added model for consistency
-  },
-  {
-    id: 2,
-    name: "Dell XPS 13 Plus",
-    brand: "Dell",
-    price: 1299,
-    originalPrice: 1499,
-    imageUrl: "/placeholder.svg?height=300&width=400",
-    rating: 4.7,
-    reviews: 892,
-    specs: ["Intel i7-13700H", "16GB RAM", "512GB SSD", '13.4" OLED'],
-    category: "Ultrabook",
-    inStock: true,
-    stock: 8,
-    model: "XPS13-PLUS-2024", // Added model for consistency
-  },
-  {
-    id: 3,
-    name: "ASUS ROG Strix G15",
-    brand: "ASUS",
-    price: 1899,
-    originalPrice: 2199,
-    imageUrl: "/placeholder.svg?height=300&width=400",
-    rating: 4.8,
-    reviews: 634,
-    specs: ["AMD Ryzen 9", "32GB RAM", "1TB SSD", "RTX 4070"],
-    category: "Gaming",
-    inStock: true,
-    stock: 10,
-    model: "ROG-G15-2024", // Added model for consistency
-  },
-  {
-    id: 4,
-    name: "ThinkPad X1 Carbon",
-    brand: "Lenovo",
-    price: 1599,
-    originalPrice: 1899,
-    imageUrl: "/placeholder.svg?height=300&width=400",
-    rating: 4.6,
-    reviews: 445,
-    specs: ["Intel i7-13700U", "16GB RAM", "512GB SSD", '14" 2.8K'],
-    category: "Business",
-    inStock: false,
-    stock: 0,
-    model: "X1-CARBON-2024", // Added model for consistency
-  },
-  {
-    id: 5,
-    name: "HP Spectre x360",
-    brand: "HP",
-    price: 1399,
-    originalPrice: 1599,
-    imageUrl: "/placeholder.svg?height=300&width=400",
-    rating: 4.5,
-    reviews: 328,
-    specs: ["Intel i7-1355U", "16GB RAM", "512GB SSD", '13.5" Touch'],
-    category: "2-in-1",
-    inStock: true,
-    stock: 7,
-    model: "SPECTRE-X360-2024", // Added model for consistency
-  },
-  {
-    id: 6,
-    name: "MSI Creator Z16P",
-    brand: "MSI",
-    price: 2299,
-    originalPrice: 2599,
-    imageUrl: "/placeholder.svg?height=300&width=400",
-    rating: 4.7,
-    reviews: 156,
-    specs: ["Intel i9-13900H", "32GB RAM", "1TB SSD", "RTX 4060"],
-    category: "Creative",
-    inStock: true,
-    stock: 5,
-    model: "CREATOR-Z16P-2024", // Added model for consistency
-  },
-]
+import React, { useState, useEffect } from "react";
+import { useLocation, Link, useNavigate } from "react-router-dom";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { 
+  ShoppingCart, MapPin, 
+  ArrowLeft, Loader2 
+} from 'lucide-react';
+import axios from "axios";
 
 const algerianWilayas = [
-  "Adrar", "Chlef", "Laghouat", "Oum El Bouaghi", "Batna", "Béjaïa", "Biskra", "Béchar", "Blida", "Bouira",
-  "Tamanrasset", "Tébessa", "Tlemcen", "Tiaret", "Tizi Ouzou", "Alger", "Djelfa", "Jijel", "Sétif", "Saïda",
-  "Skikda", "Sidi Bel Abbès", "Annaba", "Guelma", "Constantine", "Médéa", "Mostaganem", "M'Sila", "Mascara",
-  "Ouargla", "Oran", "El Bayadh", "Illizi", "Bordj Bou Arréridj", "Boumerdès", "El Tarf", "Tindouf",
-  "Tissemsilt", "El Oued", "Khenchela", "Souk Ahras", "Tipaza", "Mila", "Aïn Defla", "Naâma", "Aïn Témouchent",
-  "Ghardaïa", "Relizane",
-]
+  "Adrar", "Chlef", "Laghouat", "Oum El Bouaghi", "Batna", "Béjaïa", "Biskra", 
+  "Béchar", "Blida", "Bouira", "Tamanrasset", "Tébessa", "Tlemcen", "Tiaret", 
+  "Tizi Ouzou", "Alger", "Djelfa", "Jijel", "Sétif", "Saïda", "Skikda", 
+  "Sidi Bel Abbès", "Annaba", "Guelma", "Constantine", "Médéa", "Mostaganem", 
+  "M'Sila", "Mascara", "Ouargla", "Oran", "El Bayadh", "Illizi", 
+  "Bordj Bou Arréridj", "Boumerdès", "El Tarf", "Tindouf", "Tissemsilt", 
+  "El Oued", "Khenchela", "Souk Ahras", "Tipaza", "Mila", "Aïn Defla", 
+  "Naâma", "Aïn Témouchent", "Ghardaïa", "Relizane"
+];
 
 export default function CartPage() {
-  const location = useLocation()
-  const searchParams = new URLSearchParams(location.search)
-  const productId = searchParams.get("productId")
-  const quantity = parseInt(searchParams.get("quantity") || "1")
-
-  const [selectedProduct, setSelectedProduct] = useState(null)
-  const [orderQuantity, setOrderQuantity] = useState(quantity)
-  const [activeTab, setActiveTab] = useState("signin")
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  // Form states
-  const [signInData, setSignInData] = useState({
-    email: "",
-    password: "",
-  })
-
-  const [signUpData, setSignUpData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
-  })
+  const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const productId = searchParams.get("productId");
+  const quantityParam = parseInt(searchParams.get("quantity") || "1", 10);
+  
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [orderQuantity, setOrderQuantity] = useState(quantityParam);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
   const [orderData, setOrderData] = useState({
     wilaya: "",
     address: "",
     notes: "",
-  })
+  });
 
-  const [agreeToTerms, setAgreeToTerms] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [currentUser, setCurrentUser] = useState(null)
-
-  // This useEffect now correctly depends on `products` to find the selected product
+  // Check for existing auth on component mount
   useEffect(() => {
-    if (productId && products.length > 0) { // Ensure products array is populated
-      const product = products.find((p) => p.id === parseInt(productId))
-      setSelectedProduct(product)
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+    
+    if (storedToken && storedUser) {
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
     }
-  }, [productId, products]) // Added products to dependency array
+    
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/products');
+        setProducts(response.data);
+      } catch (err) {
+        console.error('Failed to load products:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const handleSignIn = async (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    fetchProducts();
+  }, []);
 
-    // Simulate API call
-    setTimeout(() => {
-      // Mock successful login
-      setCurrentUser({
-        name: "John Doe",
-        email: signInData.email,
-        phone: "+213 555 123 456",
-      })
-      setIsLoggedIn(true)
-      setIsSubmitting(false)
-    }, 1500)
+  // Find selected product
+  useEffect(() => {
+    if (productId && products.length > 0) {
+      const product = products.find(p => p._id === productId);
+      setSelectedProduct(product);
+    }
+  }, [productId, products]);
+
+const handlePlaceOrder = async (e) => {
+  e.preventDefault();
+
+  if (!orderData.wilaya || !orderData.address) {
+    alert("Please fill in all required fields");
+    return;
   }
 
-  const handleSignUp = async (e) => {
-    e.preventDefault()
-
-    if (signUpData.password !== signUpData.confirmPassword) {
-      alert("Passwords don't match!")
-      return
-    }
-
-    if (!agreeToTerms) {
-      alert("Please agree to the terms and conditions")
-      return
-    }
-
-    setIsSubmitting(true)
-
-    // Simulate API call
-    setTimeout(() => {
-      // Mock successful registration
-      setCurrentUser({
-        name: signUpData.name,
-        email: signUpData.email,
-        phone: signUpData.phone,
-      })
-      setIsLoggedIn(true)
-      setIsSubmitting(false)
-    }, 1500)
+  if (!token) {
+    alert("Please sign in to place an order");
+    navigate('/login', { state: { from: location.pathname + location.search } });
+    return;
   }
 
-  const handlePlaceOrder = async (e) => {
-    e.preventDefault()
+  if (!selectedProduct) {
+    alert("Product information is missing");
+    return;
+  }
 
-    if (!orderData.wilaya || !orderData.address) {
-      alert("Please fill in all required fields")
-      return
+  setIsSubmitting(true);
+
+  // Calculate total amount
+  const totalAmount = selectedProduct.price * orderQuantity;
+
+  try {
+    const response = await axios.post(
+      'http://localhost:5000/api/orders',
+      {
+        products: [{
+          productId: selectedProduct._id,
+          quantity: orderQuantity
+        }],
+        totalAmount,
+        wilaya: orderData.wilaya,
+        address: orderData.address,
+        notes: orderData.notes
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (response.status === 201) {
+      alert("Order placed successfully!");
+      navigate('/order-success');
     }
+  } catch (error) {
+  console.error('Error placing order:', error);
+  
+  let errorMessage = 'Failed to place order. Please try again.';
+  
+  if (error.response?.status === 401) {
+    errorMessage = 'Session expired. Please log in again.';
+    // Clear invalid token
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setToken(null);
+    setUser(null);
+    // Redirect to login
+    navigate('/login', { state: { from: location.pathname + location.search } });
+  }
+  else if (error.response?.status === 400) {
+    errorMessage = error.response.data.message || 'Validation failed';
+  } 
+  // ... other error handling ...
+  
+  alert(`Error: ${errorMessage}`);
+}
+   finally {
+    setIsSubmitting(false);
+  }
+};
 
-    setIsSubmitting(true)
-
-    // Simulate API call to create order
-    setTimeout(() => {
-      alert("Order placed successfully! We will contact you shortly to confirm your order.")
-      setIsSubmitting(false)
-      // In real app, redirect to success page
-    }, 2000)
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
   }
 
   if (!selectedProduct) {
@@ -226,10 +167,10 @@ export default function CartPage() {
           </Link>
         </div>
       </div>
-    )
+    );
   }
 
-  const total = selectedProduct.price * orderQuantity
+  const total = selectedProduct.price * orderQuantity;
 
   return (
     <div className="min-h-screen bg-background">
@@ -246,7 +187,9 @@ export default function CartPage() {
               </Link>
               <div>
                 <h1 className="text-3xl font-bold text-foreground">Complete Your Order</h1>
-                <p className="text-muted-foreground mt-1">Sign in or create account to place your order</p>
+                <p className="text-muted-foreground mt-1">
+                  {user ? "Complete your delivery information" : "Sign in or create account to place your order"}
+                </p>
               </div>
             </div>
           </div>
@@ -257,7 +200,7 @@ export default function CartPage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Order Form */}
           <div className="lg:col-span-2">
-            {!isLoggedIn ? (
+            {!user ? (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-2xl text-center text-foreground">Account Required</CardTitle>
@@ -266,221 +209,49 @@ export default function CartPage() {
                   </p>
                 </CardHeader>
                 <CardContent>
-                  <div className="w-full">
-                    <div className="flex space-x-1 bg-secondary p-1 rounded-lg mb-6">
-                      {["signin", "signup"].map((tab) => (
-                        <button
-                          key={tab}
-                          onClick={() => setActiveTab(tab)}
-                          className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-                            activeTab === tab
-                              ? "bg-card text-card-foreground shadow-sm"
-                              : "text-muted-foreground hover:text-foreground"
-                          }`}
+                  <div className="flex flex-col items-center space-y-6">
+                    <div className="text-center">
+                      <p className="text-muted-foreground mb-4">
+                        You need an account to complete your purchase
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-4">
+                        <Button
+                          onClick={() => navigate('/login', { state: { from: location.pathname + location.search } })}
+                          className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground"
                         >
-                          {tab === "signin" ? "Sign In" : "Create Account"}
-                        </button>
-                      ))}
+                          Sign In
+                        </Button>
+                        <Button
+                          onClick={() => navigate('/register', { state: { from: location.pathname + location.search } })}
+                          variant="outline"
+                          className="w-full sm:w-auto"
+                        >
+                          Create Account
+                        </Button>
+                      </div>
                     </div>
-
-                    {activeTab === "signin" && (
-                      <form onSubmit={handleSignIn} className="space-y-4">
-                        <div className="space-y-2">
-                          <label htmlFor="signin-email" className="text-sm font-medium text-foreground">Email Address</label>
-                          <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input
-                              id="signin-email"
-                              type="email"
-                              placeholder="Enter your email"
-                              value={signInData.email}
-                              onChange={(e) => setSignInData({ ...signInData, email: e.target.value })}
-                              className="pl-10"
-                              required
-                            />
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <label htmlFor="signin-password" className="text-sm font-medium text-foreground">Password</label>
-                          <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input
-                              id="signin-password"
-                              type={showPassword ? "text" : "password"}
-                              placeholder="Enter your password"
-                              value={signInData.password}
-                              onChange={(e) => setSignInData({ ...signInData, password: e.target.value })}
-                              className="pl-10 pr-10"
-                              required
-                            />
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-                              onClick={() => setShowPassword(!showPassword)}
-                            >
-                              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                            </Button>
-                          </div>
-                        </div>
-
-                        <Button
-                          type="submit"
-                          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-                          disabled={isSubmitting}
-                        >
-                          {isSubmitting ? (
-                            <>
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground mr-2" />
-                              Signing In...
-                            </>
-                          ) : (
-                            "Sign In"
-                          )}
-                        </Button>
-                      </form>
-                    )}
-
-                    {activeTab === "signup" && (
-                      <form onSubmit={handleSignUp} className="space-y-4">
-                        <div className="space-y-2">
-                          <label htmlFor="signup-name" className="text-sm font-medium text-foreground">Full Name</label>
-                          <div className="relative">
-                            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input
-                              id="signup-name"
-                              type="text"
-                              placeholder="Enter your full name"
-                              value={signUpData.name}
-                              onChange={(e) => setSignUpData({ ...signUpData, name: e.target.value })}
-                              className="pl-10"
-                              required
-                            />
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <label htmlFor="signup-email" className="text-sm font-medium text-foreground">Email Address</label>
-                          <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input
-                              id="signup-email"
-                              type="email"
-                              placeholder="Enter your email"
-                              value={signUpData.email}
-                              onChange={(e) => setSignUpData({ ...signUpData, email: e.target.value })}
-                              className="pl-10"
-                              required
-                            />
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <label htmlFor="signup-phone" className="text-sm font-medium text-foreground">Phone Number</label>
-                          <div className="relative">
-                            <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input
-                              id="signup-phone"
-                              type="tel"
-                              placeholder="+213 555 123 456"
-                              value={signUpData.phone}
-                              onChange={(e) => setSignUpData({ ...signUpData, phone: e.target.value })}
-                              className="pl-10"
-                              required
-                            />
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <label htmlFor="signup-password" className="text-sm font-medium text-foreground">Password</label>
-                          <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input
-                              id="signup-password"
-                              type={showPassword ? "text" : "password"}
-                              placeholder="Create a password"
-                              value={signUpData.password}
-                              onChange={(e) => setSignUpData({ ...signUpData, password: e.target.value })}
-                              className="pl-10 pr-10"
-                              required
-                            />
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-                              onClick={() => setShowPassword(!showPassword)}
-                            >
-                              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                            </Button>
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <label htmlFor="signup-confirm-password" className="text-sm font-medium text-foreground">Confirm Password</label>
-                          <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input
-                              id="signup-confirm-password"
-                              type={showConfirmPassword ? "text" : "password"}
-                              placeholder="Confirm your password"
-                              value={signUpData.confirmPassword}
-                              onChange={(e) => setSignUpData({ ...signUpData, confirmPassword: e.target.value })}
-                              className="pl-10 pr-10"
-                              required
-                            />
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-                              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            >
-                              {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                            </Button>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start space-x-3">
-                          <input
-                            type="checkbox"
-                            id="terms"
-                            checked={agreeToTerms}
-                            onChange={(e) => setAgreeToTerms(e.target.checked)}
-                            className="mt-1"
-                          />
-                          <div className="text-sm">
-                            <label htmlFor="terms" className="cursor-pointer text-muted-foreground">
-                              I agree to the{" "}
-                              <Link to="/terms" className="text-primary hover:underline">
-                                Terms and Conditions
-                              </Link>{" "}
-                              and{" "}
-                              <Link to="/privacy" className="text-primary hover:underline">
-                                Privacy Policy
-                              </Link>
-                            </label>
-                          </div>
-                        </div>
-
-                        <Button
-                          type="submit"
-                          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-                          disabled={isSubmitting || !agreeToTerms}
-                        >
-                          {isSubmitting ? (
-                            <>
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground mr-2" />
-                              Creating Account...
-                            </>
-                          ) : (
-                            "Create Account"
-                          )}
-                        </Button>
-                      </form>
-                    )}
+                    
+                    <div className="w-full border-t border-border pt-6">
+                      <h4 className="font-medium text-foreground mb-3">Why create an account?</h4>
+                      <ul className="text-muted-foreground space-y-2 text-sm">
+                        <li className="flex items-start">
+                          <span className="text-primary mr-2">✓</span>
+                          <span>Faster checkout experience</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-primary mr-2">✓</span>
+                          <span>Track your order history</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-primary mr-2">✓</span>
+                          <span>Save delivery addresses</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-primary mr-2">✓</span>
+                          <span>Receive special offers</span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -491,7 +262,7 @@ export default function CartPage() {
                     <MapPin className="w-5 h-5 mr-2 text-primary" />
                     Delivery Information
                   </CardTitle>
-                  <p className="text-muted-foreground">Welcome back, {currentUser.name}!</p>
+                  <p className="text-muted-foreground">Welcome back, {user.name}!</p>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handlePlaceOrder} className="space-y-6">
@@ -502,6 +273,7 @@ export default function CartPage() {
                         onChange={(e) => setOrderData({ ...orderData, wilaya: e.target.value })}
                         className="w-full p-2 border border-input bg-background rounded-md text-foreground"
                         required
+                        disabled={isSubmitting}
                       >
                         <option value="">Select your wilaya</option>
                         {algerianWilayas.map((wilaya) => (
@@ -522,6 +294,7 @@ export default function CartPage() {
                         rows={3}
                         className="w-full p-2 border border-input bg-background rounded-md text-foreground"
                         required
+                        disabled={isSubmitting}
                       />
                     </div>
 
@@ -534,6 +307,7 @@ export default function CartPage() {
                         onChange={(e) => setOrderData({ ...orderData, notes: e.target.value })}
                         rows={2}
                         className="w-full p-2 border border-input bg-background rounded-md text-foreground"
+                        disabled={isSubmitting}
                       />
                     </div>
 
@@ -555,7 +329,7 @@ export default function CartPage() {
                     >
                       {isSubmitting ? (
                         <>
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary-foreground mr-2" />
+                          <Loader2 className="h-5 w-5 animate-spin mr-2" />
                           Placing Order...
                         </>
                       ) : (
@@ -585,12 +359,22 @@ export default function CartPage() {
                       src={selectedProduct.imageUrl || "/placeholder.svg"}
                       alt={selectedProduct.name}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/placeholder.svg";
+                      }}
                     />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="font-medium text-foreground truncate">{selectedProduct.name}</h4>
                     <p className="text-sm text-muted-foreground">Model: {selectedProduct.model}</p>
-                    <p className="text-sm text-green-600">{selectedProduct.stock} in stock</p>
+                    <p className={`text-sm ${
+                      selectedProduct.stock > 0 ? "text-green-600" : "text-destructive"
+                    }`}>
+                      {selectedProduct.stock > 0 
+                        ? `${selectedProduct.stock} in stock` 
+                        : "Out of stock"}
+                    </p>
                   </div>
                 </div>
 
@@ -602,7 +386,7 @@ export default function CartPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => setOrderQuantity(Math.max(1, orderQuantity - 1))}
-                      disabled={orderQuantity <= 1}
+                      disabled={orderQuantity <= 1 || isSubmitting}
                       className="h-8 w-8 p-0"
                     >
                       -
@@ -612,7 +396,7 @@ export default function CartPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => setOrderQuantity(orderQuantity + 1)}
-                      disabled={orderQuantity >= selectedProduct.stock}
+                      disabled={orderQuantity >= selectedProduct.stock || isSubmitting}
                       className="h-8 w-8 p-0"
                     >
                       +
@@ -641,18 +425,18 @@ export default function CartPage() {
                 </div>
 
                 {/* User Info (if logged in) */}
-                {isLoggedIn && currentUser && (
+                {user && (
                   <div className="bg-secondary p-4 rounded-lg border border-border">
                     <h4 className="font-medium text-foreground mb-2">Account Details</h4>
                     <div className="text-sm text-muted-foreground space-y-1">
                       <p>
-                        <span className="font-medium">Name:</span> {currentUser.name}
+                        <span className="font-medium">Name:</span> {user.name}
                       </p>
                       <p>
-                        <span className="font-medium">Email:</span> {currentUser.email}
+                        <span className="font-medium">Email:</span> {user.email}
                       </p>
                       <p>
-                        <span className="font-medium">Phone:</span> {currentUser.phone}
+                        <span className="font-medium">Phone:</span> {user.phone}
                       </p>
                     </div>
                   </div>
@@ -663,5 +447,5 @@ export default function CartPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
