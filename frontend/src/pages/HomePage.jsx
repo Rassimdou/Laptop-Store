@@ -3,13 +3,26 @@ import { Link } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { Card, CardContent } from "../components/ui/card"
 import { Badge } from "../components/ui/badge"
-import { ShoppingCart, Star, Zap, Shield, Truck, ArrowRight, Menu, X } from 'lucide-react'
+import { ShoppingCart, Star, Zap, Shield, Truck, ArrowRight, Menu, X, User } from 'lucide-react'
 
 import axios from 'axios'
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [featuredLaptops, setFeaturedLaptops] = useState([])
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    // Check for user in localStorage
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        console.error('Error parsing user data:', e);
+      }
+    }
+  }, []);
 
 
       useEffect(() => {
@@ -24,6 +37,14 @@ export default function HomePage() {
       }
       featuredLaptops()
       }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    // Redirect to home page
+    window.location.href = '/';
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -62,9 +83,45 @@ export default function HomePage() {
                   3
                 </Badge>
               </Button>
-              <Button className="hidden md:flex bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
-                Sign In
-              </Button>
+              <div className="hidden md:flex space-x-2">
+                {user ? (
+                  <div className="relative group">
+                    <Button variant="ghost" className="flex items-center space-x-2">
+                      <User className="w-5 h-5" />
+                      <span>{user.name}</span>
+                    </Button>
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block z-50">
+                      <Link to="/my-orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        My Orders
+                      </Link>
+                      {user.role === 'admin' && (
+                        <Link to="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          Admin Dashboard
+                        </Link>
+                      )}
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <Link to="/login">
+                      <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+                        Login
+                      </Button>
+                    </Link>
+                    <Link to="/register">
+                      <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+                        Register
+                      </Button>
+                    </Link>
+                  </>
+                )}
+              </div>
               <Button
                 variant="ghost"
                 size="icon"
@@ -76,6 +133,53 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+        
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="fixed inset-0 bg-gray-900 z-[999] p-4 pt-16 overflow-y-auto">
+            <div className="px-6 space-y-2">
+              <Link to="/" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                Home
+              </Link>
+              <Link to="/products" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                Products
+              </Link>
+              <Link to="/about" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                About
+              </Link>
+              {user ? (
+                <>
+                  <Link to="/my-orders" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                    My Orders
+                  </Link>
+                  {user.role === 'admin' && (
+                    <Link to="/admin" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                      Admin Dashboard
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="block w-full text-left text-foreground hover:text-primary transition-colors py-2"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                    Login
+                  </Link>
+                  <Link to="/register" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                    Register
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Compact Hero Section */}

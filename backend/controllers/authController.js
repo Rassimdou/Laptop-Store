@@ -71,7 +71,7 @@ export const login = async (req, res) => {
         role: client.role
       },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '24h' }
     );
 
     // Optionally set the token as a cookie (recommended for security)
@@ -79,8 +79,8 @@ export const login = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'Strict',
-      maxAge: 3600000 // 1 hour
-    });
+      maxAge: 86400000 // 24 hours
+   });
 
     res.status(200).json({
       message: 'Login successful',

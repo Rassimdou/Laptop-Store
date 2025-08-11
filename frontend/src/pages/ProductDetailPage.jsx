@@ -1,57 +1,100 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { Card, CardContent } from "../components/ui/card"
 import { Badge } from "../components/ui/badge"
-import { ShoppingCart, Star, Heart, Share2, Truck, Shield, RotateCcw, Phone } from 'lucide-react'
-
-// Mock data - in real app this would come from API
-const laptop = {
-  id: 1,
-  name: 'MacBook Pro 16"',
-  brand: "Apple",
-  price: 2499,
-  originalPrice: 2799,
-  images: [
-    "https://via.placeholder.com/600x500?text=MacBook+Pro+Front",
-    "https://via.placeholder.com/600x500?text=MacBook+Pro+Side",
-    "https://via.placeholder.com/600x500?text=MacBook+Pro+Back",
-    "https://via.placeholder.com/600x500?text=MacBook+Pro+Open",
-  ],
-  rating: 4.9,
-  reviews: 1247,
-  category: "Professional",
-  inStock: true,
-  stockCount: 15,
-  description:
-    "The MacBook Pro 16-inch is designed for professionals who demand the ultimate in performance and portability. With the powerful M3 Pro chip, stunning Liquid Retina XDR display, and all-day battery life, it's perfect for creative professionals, developers, and power users.",
-  specs: {
-    processor: "Apple M3 Pro chip with 12-core CPU",
-    memory: "32GB unified memory",
-    storage: "1TB SSD storage",
-    display: "16-inch Liquid Retina XDR display",
-    graphics: "18-core GPU",
-    battery: "Up to 22 hours video playback",
-    weight: "4.7 pounds (2.15 kg)",
-    dimensions: "14.01 x 9.77 x 0.66 inches",
-  },
-  features: [
-    "M3 Pro chip for incredible performance",
-    "Liquid Retina XDR display with 1000 nits sustained brightness",
-    "1080p FaceTime HD camera",
-    "Six-speaker sound system with force-cancelling woofers",
-    "Studio-quality three-microphone array",
-    "MagSafe 3 charging port",
-    "Three Thunderbolt 4 ports",
-    "HDMI port and SDXC card slot",
-  ],
-}
+import { ShoppingCart, Star, Heart, Share2, Truck, Shield, RotateCcw, Phone, Loader2 } from 'lucide-react'
+import axios from 'axios'
 
 export default function ProductDetailPage() {
   const { id } = useParams()
+  const [product, setProduct] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [activeTab, setActiveTab] = useState("specs")
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`http://localhost:5000/api/products/${id}`);
+        setProduct(response.data);
+        // Set the first image as selected by default
+        if (response.data.images && response.data.images.length > 0) {
+          setSelectedImage(0);
+        }
+      } catch (err) {
+        console.error('Error fetching product:', err);
+        setError('Failed to load product details');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchProduct();
+    }
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto" />
+          <p className="mt-4 text-gray-600">Loading product details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 text-xl font-medium">{error}</div>
+          <Button
+            className="mt-4"
+            onClick={() => window.location.reload()}
+          >
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-gray-500 text-xl font-medium">Product not found</div>
+          <Link to="/products">
+            <Button className="mt-4">Back to Products</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Use product data instead of mock data
+  const laptop = {
+    id: product._id,
+    name: product.name,
+    brand: product.brand,
+    price: product.price,
+    originalPrice: product.originalPrice || product.price,
+    images: product.images || ["/placeholder.svg"],
+    rating: product.rating || 4.5,
+    reviews: product.reviews || 0,
+    category: product.model,
+    inStock: product.stock > 0,
+    stockCount: product.stock,
+    description: product.description,
+    specs: product.specs || {},
+    features: product.features || []
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -106,7 +149,7 @@ export default function ProductDetailPage() {
           <div className="space-y-8">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Badge className="bg-blue-100 text-blue-700">{laptop.category}</Badge>
+                <Badge className="bg-blue-100 text-blue-700">{laptop.model}</Badge>
                 <div className="flex items-center space-x-2">
                   <Button variant="ghost" size="icon">
                     <Heart className="w-5 h-5" />

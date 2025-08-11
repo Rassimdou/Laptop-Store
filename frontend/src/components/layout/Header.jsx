@@ -1,11 +1,32 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { Button } from "../ui/button"
 import { Badge } from "../ui/badge"
-import { ShoppingCart, Zap, Menu, X } from 'lucide-react'
+import { ShoppingCart, Zap, Menu, X, User } from 'lucide-react'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    // Check for user in localStorage
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        console.error('Error parsing user data:', e);
+      }
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    // Redirect to home page
+    window.location.href = '/';
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
@@ -30,19 +51,43 @@ export default function Header() {
             <Link to="/about" className="text-gray-700 hover:text-primary transition-colors">
               About
             </Link>
-            <Link to="/admin" className="text-gray-700 hover:text-primary transition-colors">
-              Admin
-            </Link>
-            <Link to="/login">
-              <Button className="hidden md:flex bg-primary hover:bg-primary/90">
-                Login
-              </Button>
-            </Link>
-            <Link to="/register">
-              <Button variant="outline" className="hidden md:flex">
-                Register
-              </Button>
-            </Link>
+            {user ? (
+              <div className="relative group">
+                <Button variant="ghost" className="flex items-center space-x-2">
+                  <User className="w-5 h-5" />
+                  <span>{user.name}</span>
+                </Button>
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block z-50">
+                  <Link to="/my-orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    My Orders
+                  </Link>
+                  {user.role === 'admin' && (
+                    <Link to="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Admin Dashboard
+                    </Link>
+                  )}
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button className="hidden md:flex bg-primary hover:bg-primary/90">
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button variant="outline" className="hidden md:flex">
+                    Register
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           <div className="flex items-center space-x-4">
@@ -76,15 +121,36 @@ export default function Header() {
             <Link to="/about" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
               About
             </Link>
-            <Link to="/admin" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
-              Admin
-            </Link>
-            <Link to="/login" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
-              Login
-            </Link>
-            <Link to="/register" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
-              Register
-            </Link>
+            {user ? (
+              <>
+                <Link to="/my-orders" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                  My Orders
+                </Link>
+                {user.role === 'admin' && (
+                  <Link to="/admin" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                    Admin Dashboard
+                  </Link>
+                )}
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="block w-full text-left text-foreground hover:text-primary transition-colors py-2"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                  Login
+                </Link>
+                <Link to="/register" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                  Register
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

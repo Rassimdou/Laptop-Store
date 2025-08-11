@@ -54,10 +54,10 @@ export default function OrdersTab({
   // Filter orders based on search term and status
   const filteredOrders = orders.filter((order) => {
     const matchesSearch =
-      (order.client?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (order.clientId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order._id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.items?.some(item => 
-        item.product?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      order.products?.some(item =>
+        item.productId?.name?.toLowerCase().includes(searchTerm.toLowerCase())
       )) ?? false;
     
     const matchesStatus = statusFilter === "all" || order.status === statusFilter;
@@ -66,8 +66,8 @@ export default function OrdersTab({
   });
 
   // Calculate total quantity for an order
-  const getTotalQuantity = (items) => {
-    return items?.reduce((total, item) => total + item.quantity, 0) || 0;
+  const getTotalQuantity = (products) => {
+    return products?.reduce((total, item) => total + item.quantity, 0) || 0;
   }
 
   return (
@@ -124,17 +124,17 @@ export default function OrdersTab({
                     <td className="py-3 px-4 font-mono text-sm">{order._id.substring(0, 8)}...</td>
                     <td className="py-3 px-4">
                       <div>
-                        <div className="font-medium">{order.client?.name || "Unknown"}</div>
-                        <div className="text-sm text-gray-600">{order.client?.email || "No email"}</div>
+                        <div className="font-medium">{order.clientId?.name || "Unknown"}</div>
+                        <div className="text-sm text-gray-600">{order.clientId?.email || "No email"}</div>
                       </div>
                     </td>
                     <td className="py-3 px-4">
                       <div>
                         <div className="font-medium">
-                          {order.items?.length || 0} {order.items?.length === 1 ? "item" : "items"}
+                          {order.products?.length || 0} {order.products?.length === 1 ? "item" : "items"}
                         </div>
                         <div className="text-sm text-gray-600">
-                          Qty: {getTotalQuantity(order.items)}
+                          Qty: {getTotalQuantity(order.products)}
                         </div>
                       </div>
                     </td>
@@ -157,14 +157,14 @@ export default function OrdersTab({
                           <Eye className="w-4 h-4 mr-1" />
                           View
                         </Button>
-                        {order.client?.phone && (
+                        {order.clientId?.phone && (
                           <Button
                             size="sm"
                             variant="outline"
                             className="text-green-600 hover:text-green-700 bg-transparent"
                             asChild
                           >
-                            <a href={`tel:${order.client.phone}`}>
+                            <a href={`tel:${order.clientId.phone}`}>
                               <Phone className="w-4 h-4 mr-1" />
                               Call
                             </a>

@@ -45,7 +45,7 @@ export default function ProductsPage() {
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.brand.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesBrand = selectedBrand === "all" || product.brand === selectedBrand;
-    const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
+    const matchesCategory = selectedCategory === "all" || product.model === selectedCategory;
     const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
 
     return matchesSearch && matchesBrand && matchesCategory && matchesPrice;
@@ -68,7 +68,7 @@ export default function ProductsPage() {
 
   // Extract unique brands and categories for filters
   const uniqueBrands = [...new Set(products.map(product => product.brand))];
-  const uniqueCategories = [...new Set(products.map(product => product.category))];
+  const uniqueCategories = [...new Set(products.map(product => product.model))];
 
   if (loading) {
     return (
@@ -267,7 +267,7 @@ export default function ProductsPage() {
                     <div className="space-y-3">
                       <div className="flex items-start justify-between">
                         <Badge variant="secondary" className="text-xs font-medium bg-gray-100 text-gray-700">
-                          {product.category}
+                          {product.model}
                         </Badge>
                         <span className="text-sm text-gray-500 font-medium">{product.brand}</span>
                       </div>

@@ -18,7 +18,7 @@ export const protect = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
     // 3. Get client from token
-    const client = await Client.findById(decoded.userId);
+    const client = await Client.findById(decoded.id);
     
     if (!client) {
       return res.status(401).json({ message: 'Not authorized, client not found' });
@@ -43,7 +43,7 @@ export const protect = async (req, res, next) => {
 };
 export default protect;
 export const admin = (req, res, next) => {
-  if (req.user && req.user.role === 'admin') {
+  if (req.client && req.client.role === 'admin') {
     return next();
   }
   res.status(403).json({ message: 'Admin privileges required' });

@@ -139,7 +139,7 @@ const handlePlaceOrder = async (e) => {
   }
   else if (error.response?.status === 400) {
     errorMessage = error.response.data.message || 'Validation failed';
-  } 
+  }
   // ... other error handling ...
   
   alert(`Error: ${errorMessage}`);

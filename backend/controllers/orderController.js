@@ -4,7 +4,7 @@ import Product from '../models/Product.js';
 
 export const getAllOrders = async (req, res) => {
   try {
-    const allOrders = await Order.find();
+    const allOrders = await Order.find().populate('clientId').populate('products.productId');
     res.status(200).json({ orders: allOrders });
   } catch (error) {
     console.error('Error fetching orders:', error);

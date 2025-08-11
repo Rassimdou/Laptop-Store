@@ -19,15 +19,31 @@ export default function AdminPage() {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
- useEffect(() => {
+  
+  useEffect(() => {
     const fetchOrders = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('/orders');
+        // Get token from localStorage
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+          setError('You need to be logged in as admin to view orders');
+          setLoading(false);
+          return;
+        }
+        
+        const response = await axios.get('http://localhost:5000/api/orders', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         setOrders(response.data.orders || []);
       } catch (err) {
         if (err.response?.status === 403) {
           setError('You need admin privileges to view orders');
+        } else if (err.response?.status === 401) {
+          setError('You need to be logged in as admin to view orders');
         } else {
           setError('Failed to fetch orders');
           console.error("Error fetching orders:", err);
@@ -40,6 +56,43 @@ export default function AdminPage() {
     fetchOrders();
   }, []);
 
+
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('You need to be logged in as admin to update orders');
+        return;
+      }
+      
+      const response = await axios.patch(`http://localhost:5000/api/orders/${orderId}/status`,
+        { status: newStatus },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+      
+      // Update the orders state with the updated order
+      setOrders(prevOrders =>
+        prevOrders.map(order =>
+          order._id === orderId ? { ...order, status: newStatus } : order
+        )
+      );
+      
+      // If there's a selected order, update it too
+      if (selectedOrder && selectedOrder._id === orderId) {
+        setSelectedOrder({ ...selectedOrder, status: newStatus });
+      }
+      
+      return response.data;
+    } catch (err) {
+      console.error("Error updating order status:", err);
+      setError('Failed to update order status');
+      throw err;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -59,7 +112,32 @@ export default function AdminPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <StatsCards />
+        {loading && (
+          <div className="flex justify-center py-8">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading dashboard data...</p>
+            </div>
+          </div>
+        )}
+        
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center text-red-700">
+              <div className="font-medium">Error: {error}</div>
+            </div>
+          </div>
+        )}
+        
+        {!loading && !error && <StatsCards />}
+        
+        {selectedOrder && (
+          <OrderDetailModal
+            selectedOrder={selectedOrder}
+            setSelectedOrder={setSelectedOrder}
+            updateOrderStatus={updateOrderStatus}
+          />
+        )}
 
         <div className="space-y-6">
           <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -81,13 +159,6 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {selectedOrder && (
-        <OrderDetailModal
-          selectedOrder={selectedOrder}
-          setSelectedOrder={setSelectedOrder}
-          updateOrderStatus={updateOrderStatus}
-        />
-      )}
     </div>
   )
 }
