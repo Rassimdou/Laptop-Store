@@ -6,7 +6,7 @@ export const ProductSchema = new mongoose.Schema({
   model: { type: String, required: true }, 
   description: { type: String, required: true },
   price: { type: Number, required: true },
-  stock: { type: Number, required: true, default: 0 },
+  stock: { type: Number, default: 0 },
   imageUrl: { type: String, required: true },
   available: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now },

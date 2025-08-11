@@ -43,14 +43,23 @@ export const addProduct = async (req, res) => {
         // Log the incoming data for debugging
         console.log('Incoming product data:', { name, model, description, price, stock, imageUrl, available });
         
+        // Ensure price and stock are valid numbers
+        const priceNum = parseFloat(price);
+        const stockNum = parseInt(stock);
+        
+        // Validate price and stock
+        if (isNaN(priceNum) || isNaN(stockNum)) {
+            return res.status(400).json({ message: 'Price and stock must be valid numbers' });
+        }
+        
         const newProduct = new Product({
             name,
             model,
             description,
-            price: parseFloat(price),
-            stock: parseInt(stock),
+            price: priceNum,
+            stock: stockNum,
             imageUrl,
-            available: available !== undefined ? available : true
+            available: typeof available === 'boolean' ? available : true
         });
         await newProduct.save();
         return res.status(201).json(newProduct);
@@ -70,9 +79,30 @@ export const updateProduct = async (req, res) => {
         console.log('Updating product with ID:', id);
         console.log('Update data:', updates);
         
+        // Process updates to ensure proper data types
+        const processedUpdates = { ...updates };
+        
+        // If price is provided, ensure it's a valid number
+        if (updates.price !== undefined) {
+            const priceNum = parseFloat(updates.price);
+            if (isNaN(priceNum)) {
+                return res.status(400).json({ message: 'Price must be a valid number' });
+            }
+            processedUpdates.price = priceNum;
+        }
+        
+        // If stock is provided, ensure it's a valid number
+        if (updates.stock !== undefined) {
+            const stockNum = parseInt(updates.stock);
+            if (isNaN(stockNum)) {
+                return res.status(400).json({ message: 'Stock must be a valid number' });
+            }
+            processedUpdates.stock = stockNum;
+        }
+        
         const updatedProduct = await Product.findByIdAndUpdate(
             id,
-            updates,
+            processedUpdates,
             { new: true, runValidators: true }  // Return updated doc and validate updates
         );
         
