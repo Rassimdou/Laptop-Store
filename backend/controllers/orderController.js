@@ -140,5 +140,89 @@ export const updateOrderStatus = async (req, res) => {
   }
 
 
+};
 
-}
+export const getAnalyticsData = async (req, res) => {
+  try {
+    // Get all orders with populated product and client data
+    const orders = await Order.find().populate('clientId').populate('products.productId');
+    
+    // Calculate total revenue
+    const totalRevenue = orders.reduce((sum, order) => sum + order.totalAmount, 0);
+    
+    // Get total number of orders
+    const totalOrders = orders.length;
+    
+    // Get unique customers (based on clientId)
+    const uniqueCustomers = new Set(orders.map(order => order.clientId._id.toString()));
+    const totalCustomers = uniqueCustomers.size;
+    
+    // Get recent orders (last 3)
+    const recentOrders = orders
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 3)
+      .map(order => ({
+        id: order._id,
+        customer: order.clientId.name,
+        amount: order.totalAmount,
+        status: order.status,
+        date: order.createdAt.toISOString().split('T')[0]
+      }));
+    
+    // Calculate top products based on quantity sold
+    const productSales = {};
+    
+    orders.forEach(order => {
+      order.products.forEach(item => {
+        const productId = item.productId._id.toString();
+        if (!productSales[productId]) {
+          productSales[productId] = {
+            name: item.productId.name,
+            sales: 0
+          };
+        }
+        productSales[productId].sales += item.quantity;
+      });
+    });
+    
+    // Convert to array and sort by sales
+    const topProducts = Object.values(productSales)
+      .sort((a, b) => b.sales - a.sales)
+      .slice(0, 3);
+    
+    // Generate sales data for the last 6 months
+    const salesData = [];
+    const now = new Date();
+    
+    for (let i = 5; i >= 0; i--) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const month = date.toLocaleString('default', { month: 'short' });
+      const year = date.getFullYear();
+      
+      const monthRevenue = orders
+        .filter(order => {
+          const orderDate = new Date(order.createdAt);
+          return orderDate.getMonth() === date.getMonth() &&
+                 orderDate.getFullYear() === date.getFullYear();
+        })
+        .reduce((sum, order) => sum + order.totalAmount, 0);
+      
+      salesData.push({
+        month: `${month} ${year}`,
+        revenue: monthRevenue
+      });
+    }
+    
+    res.status(200).json({
+      totalRevenue,
+      totalOrders,
+      totalCustomers,
+      recentOrders,
+      topProducts,
+      salesData
+    });
+  } catch (error) {
+    console.error('Error fetching analytics data:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};

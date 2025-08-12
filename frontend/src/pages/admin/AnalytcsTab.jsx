@@ -29,33 +29,14 @@ export default function AnalyticsTab() {
           return;
         }
         
-        // For now, we'll use mock data since we don't have a real analytics endpoint
-        // In a real application, you would fetch this data from your backend
-        const mockAnalytics = {
-          totalRevenue: 125000,
-          totalOrders: 342,
-          totalCustomers: 128,
-          recentOrders: [
-            { id: '1', customer: 'John Doe', amount: 1299, status: 'completed', date: '2023-06-15' },
-            { id: '2', customer: 'Jane Smith', amount: 2499, status: 'pending', date: '2023-06-14' },
-            { id: '3', customer: 'Bob Johnson', amount: 899, status: 'shipped', date: '2023-06-13' },
-          ],
-          topProducts: [
-            { name: 'MacBook Pro 16"', sales: 42 },
-            { name: 'Dell XPS 15', sales: 38 },
-            { name: 'HP Spectre x360', sales: 31 },
-          ],
-          salesData: [
-            { month: 'Jan', revenue: 8500 },
-            { month: 'Feb', revenue: 12000 },
-            { month: 'Mar', revenue: 15000 },
-            { month: 'Apr', revenue: 18000 },
-            { month: 'May', revenue: 22000 },
-            { month: 'Jun', revenue: 25000 },
-          ]
-        };
+        // Fetch real analytics data from backend
+        const response = await axios.get('http://localhost:5000/api/orders/analytics', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         
-        setAnalytics(mockAnalytics);
+        setAnalytics(response.data);
       } catch (err) {
         if (err.response?.status === 403) {
           setError('You need admin privileges to view analytics');

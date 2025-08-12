@@ -1,4 +1,4 @@
-import React, { useEffect , useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import { Link } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { Card, CardContent } from "../components/ui/card"
@@ -11,6 +11,8 @@ export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [featuredLaptops, setFeaturedLaptops] = useState([])
   const [user, setUser] = useState(null)
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const userMenuRef = useRef(null)
 
   useEffect(() => {
     // Check for user in localStorage
@@ -22,6 +24,18 @@ export default function HomePage() {
         console.error('Error parsing user data:', e);
       }
     }
+    
+    // Close user menu when clicking outside
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
 
@@ -42,6 +56,7 @@ export default function HomePage() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
+    setIsUserMenuOpen(false);
     // Redirect to home page
     window.location.href = '/';
   };
@@ -85,27 +100,41 @@ export default function HomePage() {
               </Button>
               <div className="hidden md:flex space-x-2">
                 {user ? (
-                  <div className="relative group">
-                    <Button variant="ghost" className="flex items-center space-x-2">
+                  <div className="relative" ref={userMenuRef}>
+                    <Button
+                      variant="ghost"
+                      className="flex items-center space-x-2"
+                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    >
                       <User className="w-5 h-5" />
                       <span>{user.name}</span>
                     </Button>
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block z-50">
-                      <Link to="/my-orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        My Orders
-                      </Link>
-                      {user.role === 'admin' && (
-                        <Link to="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          Admin Dashboard
+                    {isUserMenuOpen && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+                        <Link
+                          to="/my-orders"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          My Orders
                         </Link>
-                      )}
-                      <button
-                        onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Logout
-                      </button>
-                    </div>
+                        {user.role === 'admin' && (
+                          <Link
+                            to="/admin"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={() => setIsUserMenuOpen(false)}
+                          >
+                            Admin Dashboard
+                          </Link>
+                        )}
+                        <button
+                          onClick={handleLogout}
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <>
@@ -252,7 +281,7 @@ export default function HomePage() {
                     {laptop.badge}
                   </Badge>
                   <img
-                    src={laptop.image || "/placeholder.svg"}
+                    src={laptop.imageUrl || "/placeholder.svg"}
                     alt={laptop.name}
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />

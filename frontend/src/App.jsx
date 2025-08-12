@@ -8,6 +8,7 @@ import AdminPage from "./pages/admin/AdminPage"
 import AboutPage from "./pages/AboutPage"
 import LoginPage from "./pages/LoginPage" // Import LoginPage
 import RegisterPage from "./pages/RegisterPage" // Import RegisterPage
+import MyOrdersPage from "./pages/MyOrdersPage" // Import MyOrdersPage
 
 function App() {
   return (
@@ -21,8 +22,9 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/about" element={<AboutPage />} />
-            <Route path="/login" element={<LoginPage />} /> {/* Add LoginPage route */}
+          <Route path="/login" element={<LoginPage />} /> {/* Add LoginPage route */}
           <Route path="/register" element={<RegisterPage />} /> {/* Add RegisterPage route */}
+          <Route path="/my-orders" element={<MyOrdersPage />} /> {/* Add MyOrdersPage route */}
         </Routes>
       </div>
     </Router>
