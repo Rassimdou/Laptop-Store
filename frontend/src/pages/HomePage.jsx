@@ -1,11 +1,13 @@
-import React, { useEffect, useState, useRef } from "react"
+"use client"
+
+import { useEffect, useState, useRef } from "react"
 import { Link } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { Card, CardContent } from "../components/ui/card"
 import { Badge } from "../components/ui/badge"
-import { ShoppingCart, Star, Zap, Shield, Truck, ArrowRight, Menu, X, User } from 'lucide-react'
+import { ShoppingCart, Star, Zap, Shield, Truck, ArrowRight, Menu, X, User } from "lucide-react"
 
-import axios from 'axios'
+import axios from "axios"
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -16,85 +18,87 @@ export default function HomePage() {
 
   useEffect(() => {
     // Check for user in localStorage
-    const storedUser = localStorage.getItem('user');
+    const storedUser = localStorage.getItem("user")
     if (storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        setUser(JSON.parse(storedUser))
       } catch (e) {
-        console.error('Error parsing user data:', e);
+        console.error("Error parsing user data:", e)
       }
     }
-    
+
     // Close user menu when clicking outside
     const handleClickOutside = (event) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
-        setIsUserMenuOpen(false);
+        setIsUserMenuOpen(false)
       }
-    };
-    
-    document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
-
-      useEffect(() => {
-      const featuredLaptops = async () => {
-        try {
-          const response = await axios.get('http://localhost:5000/api/products/latest') // Adjust the endpoint as needed
-          setFeaturedLaptops(response.data);
-         
-        } catch (error) {
-          console.error('Error fetching featured laptops:', error)
-        }
+  useEffect(() => {
+    const featuredLaptops = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/products/latest") // Adjust the endpoint as needed
+        setFeaturedLaptops(response.data)
+      } catch (error) {
+        console.error("Error fetching featured laptops:", error)
       }
-      featuredLaptops()
-      }, [])
+    }
+    featuredLaptops()
+  }, [])
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
-    setIsUserMenuOpen(false);
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    setUser(null)
+    setIsUserMenuOpen(false)
     // Redirect to home page
-    window.location.href = '/';
-  };
+    window.location.href = "/"
+  }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-900">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+      <nav className="sticky top-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-r from-red-600 to-red-500 rounded-lg flex items-center justify-center">
                 <Zap className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-gradient-to-r from-red-500 to-red-400 bg-clip-text text-transparent">
                 LaptopHub
               </span>
             </div>
 
             <div className="hidden md:flex items-center space-x-8">
-              <Link to="/" className="text-gray-700 hover:text-blue-600 transition-colors">
+              <Link to="/" className="text-gray-300 hover:text-red-400 transition-colors">
                 Home
               </Link>
-              <Link to="/products" className="text-gray-700 hover:text-blue-600 transition-colors">
+              <Link to="/products" className="text-gray-300 hover:text-red-400 transition-colors">
                 Products
               </Link>
-              <Link to="/about" className="text-gray-700 hover:text-blue-600 transition-colors">
+              <Link to="/about" className="text-gray-300 hover:text-red-400 transition-colors">
                 About
               </Link>
-              <Link to="/admin" className="text-gray-700 hover:text-blue-600 transition-colors">
+              <Link to="/admin" className="text-gray-300 hover:text-red-400 transition-colors">
                 Admin
               </Link>
             </div>
 
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="icon" className="relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative text-gray-300 hover:text-red-400 hover:bg-gray-800"
+              >
                 <ShoppingCart className="w-5 h-5" />
-                <Badge className="absolute -top-2 -right-2 w-5 h-5 rounded-full p-0 flex items-center justify-center text-xs">
+                <Badge className="absolute -top-2 -right-2 w-5 h-5 rounded-full p-0 flex items-center justify-center text-xs bg-red-600 text-white">
                   3
                 </Badge>
               </Button>
@@ -103,25 +107,25 @@ export default function HomePage() {
                   <div className="relative" ref={userMenuRef}>
                     <Button
                       variant="ghost"
-                      className="flex items-center space-x-2"
+                      className="flex items-center space-x-2 text-gray-300 hover:text-red-400 hover:bg-gray-800"
                       onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                     >
                       <User className="w-5 h-5" />
                       <span>{user.name}</span>
                     </Button>
                     {isUserMenuOpen && (
-                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+                      <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-700">
                         <Link
                           to="/my-orders"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-red-400"
                           onClick={() => setIsUserMenuOpen(false)}
                         >
                           My Orders
                         </Link>
-                        {user.role === 'admin' && (
+                        {user.role === "admin" && (
                           <Link
                             to="/admin"
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-red-400"
                             onClick={() => setIsUserMenuOpen(false)}
                           >
                             Admin Dashboard
@@ -129,7 +133,7 @@ export default function HomePage() {
                         )}
                         <button
                           onClick={handleLogout}
-                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-red-400"
                         >
                           Logout
                         </button>
@@ -139,12 +143,15 @@ export default function HomePage() {
                 ) : (
                   <>
                     <Link to="/login">
-                      <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+                      <Button className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white">
                         Login
                       </Button>
                     </Link>
                     <Link to="/register">
-                      <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+                      <Button
+                        variant="outline"
+                        className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white bg-transparent"
+                      >
                         Register
                       </Button>
                     </Link>
@@ -154,7 +161,7 @@ export default function HomePage() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:hidden"
+                className="md:hidden text-gray-300 hover:text-red-400 hover:bg-gray-800"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -162,46 +169,74 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        
+
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="fixed inset-0 bg-gray-900 z-[999] p-4 pt-16 overflow-y-auto">
             <div className="px-6 space-y-2">
-              <Link to="/" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                to="/"
+                className="block text-gray-300 hover:text-red-400 transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Home
               </Link>
-              <Link to="/products" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                to="/products"
+                className="block text-gray-300 hover:text-red-400 transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Products
               </Link>
-              <Link to="/about" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                to="/about"
+                className="block text-gray-300 hover:text-red-400 transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 About
               </Link>
               {user ? (
                 <>
-                  <Link to="/my-orders" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                  <Link
+                    to="/my-orders"
+                    className="block text-gray-300 hover:text-red-400 transition-colors py-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     My Orders
                   </Link>
-                  {user.role === 'admin' && (
-                    <Link to="/admin" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                  {user.role === "admin" && (
+                    <Link
+                      to="/admin"
+                      className="block text-gray-300 hover:text-red-400 transition-colors py-2"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
                       Admin Dashboard
                     </Link>
                   )}
                   <button
                     onClick={() => {
-                      handleLogout();
-                      setMobileMenuOpen(false);
+                      handleLogout()
+                      setMobileMenuOpen(false)
                     }}
-                    className="block w-full text-left text-foreground hover:text-primary transition-colors py-2"
+                    className="block w-full text-left text-gray-300 hover:text-red-400 transition-colors py-2"
                   >
                     Logout
                   </button>
                 </>
               ) : (
                 <>
-                  <Link to="/login" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                  <Link
+                    to="/login"
+                    className="block text-gray-300 hover:text-red-400 transition-colors py-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     Login
                   </Link>
-                  <Link to="/register" className="block text-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+                  <Link
+                    to="/register"
+                    className="block text-gray-300 hover:text-red-400 transition-colors py-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     Register
                   </Link>
                 </>
@@ -212,25 +247,29 @@ export default function HomePage() {
       </nav>
 
       {/* Compact Hero Section */}
-      <section className="bg-gradient-to-r from-blue-50 to-indigo-50 py-8">
+      <section className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 py-8 border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4">
-            <Badge className="bg-blue-100 text-blue-700">🚀 New Collection Available</Badge>
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
-              Premium Laptops for <span className="text-blue-600">Every Need</span>
+            <Badge className="bg-red-600/20 text-red-400 border border-red-600/30">🚀 New Collection Available</Badge>
+            <h1 className="text-3xl md:text-4xl font-bold text-white">
+              Premium Laptops for <span className="text-red-400">Every Need</span>
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
               Discover high-performance laptops from top brands. Perfect for work, gaming, and everything in between.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
               <Link to="/products">
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 px-8">
+                <Button size="lg" className="bg-red-600 hover:bg-red-700 px-8 text-white">
                   Shop Now
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>
               <Link to="/products">
-                <Button size="lg" variant="outline" className="px-8">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="px-8 border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white bg-transparent"
+                >
                   View Catalog
                 </Button>
               </Link>
@@ -240,32 +279,32 @@ export default function HomePage() {
       </section>
 
       {/* Quick Features Bar */}
-      <section className="bg-white border-b border-gray-100 py-4">
+      <section className="bg-gray-800 border-b border-gray-700 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center space-x-8 text-sm">
             <div className="flex items-center space-x-2">
-              <Shield className="w-5 h-5 text-green-600" />
-              <span className="text-gray-700">2 Year Warranty</span>
+              <Shield className="w-5 h-5 text-green-400" />
+              <span className="text-gray-300">2 Year Warranty</span>
             </div>
             <div className="flex items-center space-x-2">
-              <Truck className="w-5 h-5 text-blue-600" />
-              <span className="text-gray-700">Free Shipping</span>
+              <Truck className="w-5 h-5 text-red-400" />
+              <span className="text-gray-300">Free Shipping</span>
             </div>
             <div className="flex items-center space-x-2">
-              <Zap className="w-5 h-5 text-purple-600" />
-              <span className="text-gray-700">Expert Support</span>
+              <Zap className="w-5 h-5 text-yellow-400" />
+              <span className="text-gray-300">Expert Support</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Featured Products */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-12">
-            <Badge className="bg-indigo-100 text-indigo-700">Featured Collection</Badge>
-            <h2 className="text-3xl font-bold text-gray-900">Handpicked for Excellence</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <Badge className="bg-red-600/20 text-red-400 border border-red-600/30">Featured Collection</Badge>
+            <h2 className="text-3xl font-bold text-white">Handpicked for Excellence</h2>
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
               Our most popular laptops, chosen by thousands of satisfied customers
             </p>
           </div>
@@ -273,56 +312,90 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredLaptops.map((laptop, index) => (
               <Card
-                key={laptop.id}
-                className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-200 bg-white overflow-hidden"
+                key={laptop._id}
+                className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-700 bg-gray-800 overflow-hidden hover:border-red-600/50"
               >
-                <div className="relative overflow-hidden bg-gray-100">
-                  <Badge className="absolute top-3 left-3 z-10 bg-blue-600 text-white text-xs shadow-sm">
-                    {laptop.badge}
-                  </Badge>
-                  <img
-                    src={laptop.imageUrl || "/placeholder.svg"}
-                    alt={laptop.name}
-                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+                <div className="relative overflow-hidden bg-gray-700">
+                  {laptop.stock <= 0 && (
+                    <Badge className="absolute top-3 left-3 z-10 bg-red-600 text-white shadow-sm">Out of Stock</Badge>
+                  )}
+                  <div className="bg-gray-700 w-full h-48 flex items-center justify-center">
+                    {laptop.imageUrl ? (
+                      <img
+                        src={laptop.imageUrl || "/placeholder.svg"}
+                        alt={laptop.name}
+                        className="object-cover group-hover:scale-105 transition-transform duration-300 w-full h-full"
+                      />
+                    ) : (
+                      <div className="bg-gray-600 border-2 border-dashed border-gray-500 rounded-xl w-full h-full flex items-center justify-center text-gray-400">
+                        No Image
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <CardContent className="p-5 space-y-3">
                   <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
-                      {laptop.name}
-                    </h3>
+                    <div className="flex items-start justify-between">
+                      <Badge
+                        variant="secondary"
+                        className="text-xs font-medium bg-gray-700 text-gray-300 border-gray-600"
+                      >
+                        {laptop.model}
+                      </Badge>
+                      <span className="text-sm text-gray-400 font-medium">{laptop.brand}</span>
+                    </div>
+
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-semibold text-white leading-tight group-hover:text-red-400 transition-colors">
+                        {laptop.name}
+                      </h3>
+                      <p className="text-sm text-gray-400 line-clamp-2">{laptop.description}</p>
+                    </div>
+
                     <div className="flex items-center space-x-2">
                       <div className="flex items-center">
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
                             className={`w-4 h-4 ${
-                              i < Math.floor(laptop.rating) ? "text-yellow-400 fill-current" : "text-gray-300"
+                              i < Math.floor(laptop.rating || 0) ? "text-yellow-400 fill-current" : "text-gray-600"
                             }`}
                           />
                         ))}
                       </div>
-                      <span className="text-sm text-gray-600">({laptop.reviews})</span>
+                      <span className="text-sm text-gray-400">({laptop.reviews || 0})</span>
                     </div>
                   </div>
 
-                 
-
-                  <div className="pt-3 border-t border-gray-100">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="space-y-1">
-                        <div className="flex items-baseline space-x-2">
-                          <span className="text-xl font-bold text-gray-900">${laptop.price}</span>
-                          <span className="text-sm text-gray-500 line-through">${laptop.originalPrice}</span>
-                        </div>
-                        <div className="text-sm text-green-600 font-medium">
-                          Save ${laptop.originalPrice - laptop.price}
-                        </div>
+                  <div className="pt-3 border-t border-gray-700">
+                    <div className="mb-3">
+                      <div className="flex items-baseline space-x-2">
+                        <span className="text-xl font-bold text-white">${laptop.price}</span>
                       </div>
-                      <Link to={`/products/${laptop.id}`}>
-                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white px-4">
-                          View
+                      <div className="text-sm text-gray-400 mt-1">
+                        {laptop.stock > 0 ? `${laptop.stock} in stock` : "Out of stock"}
+                      </div>
+                    </div>
+
+                    <div className="flex space-x-2">
+                      <Link to={`/products/${laptop._id}`} className="flex-1">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="w-full text-sm bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                        >
+                          View Details
+                        </Button>
+                      </Link>
+                      <Link to={`/cart?productId=${laptop._id}&quantity=1`} className="flex-1">
+                        <Button
+                          size="sm"
+                          className="w-full bg-red-600 hover:bg-red-700 text-sm text-white"
+                          disabled={laptop.stock <= 0}
+                        >
+                          <ShoppingCart className="w-4 h-4 mr-1" />
+                          {laptop.stock > 0 ? "Add to Cart" : "Sold Out"}
                         </Button>
                       </Link>
                     </div>
@@ -334,7 +407,11 @@ export default function HomePage() {
 
           <div className="text-center mt-12">
             <Link to="/products">
-              <Button size="lg" variant="outline" className="px-8">
+              <Button
+                size="lg"
+                variant="outline"
+                className="px-8 border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white bg-transparent"
+              >
                 View All Products
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
@@ -344,11 +421,11 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-12">
-            <h2 className="text-3xl font-bold text-gray-900">Why Choose LaptopHub?</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-white">Why Choose LaptopHub?</h2>
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
               We're committed to providing the best laptop shopping experience
             </p>
           </div>
@@ -373,13 +450,13 @@ export default function HomePage() {
             ].map((feature, index) => (
               <div
                 key={index}
-                className="text-center space-y-4 p-6 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow duration-300"
+                className="text-center space-y-4 p-6 rounded-xl bg-gray-900 border border-gray-700 hover:border-red-600/50 hover:shadow-lg transition-all duration-300"
               >
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 bg-gradient-to-r from-red-600 to-red-500 rounded-xl flex items-center justify-center mx-auto">
                   <feature.icon className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <h3 className="text-xl font-semibold text-white">{feature.title}</h3>
+                <p className="text-gray-300">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -387,16 +464,16 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-indigo-600">
+      <section className="py-16 bg-gradient-to-r from-red-600 to-red-500">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <div className="space-y-6">
             <h2 className="text-3xl font-bold text-white">Ready to Find Your Perfect Laptop?</h2>
-            <p className="text-lg text-blue-100">
+            <p className="text-lg text-red-100">
               Browse our complete collection and discover the laptop that matches your needs
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/products">
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8">
+                <Button size="lg" className="bg-white text-red-600 hover:bg-gray-100 px-8">
                   Shop All Laptops
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
@@ -407,12 +484,12 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-black text-white py-12 border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-r from-red-600 to-red-500 rounded-lg flex items-center justify-center">
                   <Zap className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-xl font-bold">LaptopHub</span>
@@ -421,32 +498,32 @@ export default function HomePage() {
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Products</h3>
+              <h3 className="text-lg font-semibold text-red-400">Products</h3>
               <div className="space-y-2 text-gray-400">
-                <div>Gaming Laptops</div>
-                <div>Business Laptops</div>
-                <div>Student Laptops</div>
-                <div>Workstations</div>
+                <div className="hover:text-red-400 transition-colors cursor-pointer">Gaming Laptops</div>
+                <div className="hover:text-red-400 transition-colors cursor-pointer">Business Laptops</div>
+                <div className="hover:text-red-400 transition-colors cursor-pointer">Student Laptops</div>
+                <div className="hover:text-red-400 transition-colors cursor-pointer">Workstations</div>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Support</h3>
+              <h3 className="text-lg font-semibold text-red-400">Support</h3>
               <div className="space-y-2 text-gray-400">
-                <div>Contact Us</div>
-                <div>Warranty</div>
-                <div>Returns</div>
-                <div>FAQ</div>
+                <div className="hover:text-red-400 transition-colors cursor-pointer">Contact Us</div>
+                <div className="hover:text-red-400 transition-colors cursor-pointer">Warranty</div>
+                <div className="hover:text-red-400 transition-colors cursor-pointer">Returns</div>
+                <div className="hover:text-red-400 transition-colors cursor-pointer">FAQ</div>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Company</h3>
+              <h3 className="text-lg font-semibold text-red-400">Company</h3>
               <div className="space-y-2 text-gray-400">
-                <div>About Us</div>
-                <div>Careers</div>
-                <div>Privacy Policy</div>
-                <div>Terms of Service</div>
+                <div className="hover:text-red-400 transition-colors cursor-pointer">About Us</div>
+                <div className="hover:text-red-400 transition-colors cursor-pointer">Careers</div>
+                <div className="hover:text-red-400 transition-colors cursor-pointer">Privacy Policy</div>
+                <div className="hover:text-red-400 transition-colors cursor-pointer">Terms of Service</div>
               </div>
             </div>
           </div>

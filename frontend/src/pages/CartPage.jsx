@@ -40,7 +40,71 @@ export default function CartPage() {
     address: "",
     notes: "",
   });
+const [showMap, setShowMap] = useState(false);
+  const [mapCenter, setMapCenter] = useState({ lat: 36.7538, lng: 3.0588 }); // Default to Algiers
 
+  // Wilaya coordinates for map centering
+  const wilayaCoordinates = {
+    "Adrar": { lat: 27.8667, lng: -0.2833 },
+    "Chlef": { lat: 36.1667, lng: 1.3333 },
+    "Laghouat": { lat: 33.8, lng: 2.8667 },
+    "Oum El Bouaghi": { lat: 35.8667, lng: 7.1 },
+    "Batna": { lat: 35.55, lng: 6.1667 },
+    "Béjaïa": { lat: 36.75, lng: 5.0667 },
+    "Biskra": { lat: 34.85, lng: 5.7333 },
+    "Béchar": { lat: 31.6167, lng: -2.2167 },
+    "Blida": { lat: 36.4833, lng: 2.8167 },
+    "Bouira": { lat: 36.3833, lng: 3.9 },
+    "Tamanrasset": { lat: 22.7833, lng: 5.5167 },
+    "Tébessa": { lat: 35.4, lng: 8.1167 },
+    "Tlemcen": { lat: 34.8833, lng: -1.3167 },
+    "Tiaret": { lat: 35.3667, lng: 1.3333 },
+    "Tizi Ouzou": { lat: 36.7167, lng: 4.05 },
+    "Alger": { lat: 36.7538, lng: 3.0588 },
+    "Djelfa": { lat: 34.6667, lng: 3.25 },
+    "Jijel": { lat: 36.8, lng: 5.7667 },
+    "Sétif": { lat: 36.1833, lng: 5.4 },
+    "Saïda": { lat: 34.8333, lng: 0.15 },
+    "Skikda": { lat: 36.8667, lng: 6.9 },
+    "Sidi Bel Abbès": { lat: 35.2, lng: -0.6333 },
+    "Annaba": { lat: 36.9, lng: 7.7667 },
+    "Guelma": { lat: 36.4667, lng: 7.4333 },
+    "Constantine": { lat: 36.35, lng: 6.6 },
+    "Médéa": { lat: 36.2667, lng: 2.75 },
+    "Mostaganem": { lat: 35.9333, lng: 0.0833 },
+    "M'Sila": { lat: 35.7, lng: 4.5333 },
+    "Mascara": { lat: 35.4, lng: 0.15 },
+    "Ouargla": { lat: 31.95, lng: 5.3167 },
+    "Oran": { lat: 35.7, lng: -0.6333 },
+    "El Bayadh": { lat: 33.6833, lng: 1.0167 },
+    "Illizi": { lat: 26.1667, lng: 8.4833 },
+    "Bordj Bou Arréridj": { lat: 36.0667, lng: 4.7667 },
+    "Boumerdès": { lat: 36.7667, lng: 3.7167 },
+    "El Tarf": { lat: 36.7667, lng: 8.3167 },
+    "Tindouf": { lat: 27.6833, lng: -8.1667 },
+    "Tissemsilt": { lat: 35.6, lng: 1.8 },
+    "El Oued": { lat: 33.3667, lng: 6.8667 },
+    "Khenchela": { lat: 35.4333, lng: 7.1333 },
+    "Souk Ahras": { lat: 36.2833, lng: 7.95 },
+    "Tipaza": { lat: 36.6, lng: 2.4167 },
+    "Mila": { lat: 36.45, lng: 6.2667 },
+    "Aïn Defla": { lat: 36.2667, lng: 1.9667 },
+    "Naâma": { lat: 33.2667, lng: -0.3167 },
+    "Aïn Témouchent": { lat: 35.3, lng: -1.1333 },
+    "Ghardaïa": { lat: 32.4833, lng: 3.6667 },
+    "Relizane": { lat: 35.7333, lng: 0.55 }
+  };
+
+// Function to handle wilaya selection and update map center
+  const handleWilayaChange = (e) => {
+    const wilaya = e.target.value;
+    setOrderData({ ...orderData, wilaya });
+    
+    // Update map center when a wilaya is selected
+    if (wilaya && wilayaCoordinates[wilaya]) {
+      setMapCenter(wilayaCoordinates[wilaya]);
+    }
+  };
   // Check for existing auth on component mount
   useEffect(() => {
     const storedToken = localStorage.getItem('token');

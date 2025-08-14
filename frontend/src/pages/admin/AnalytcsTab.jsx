@@ -86,7 +86,7 @@ export default function AnalyticsTab() {
                   <DollarSign className="w-8 h-8 text-green-600" />
                   <div className="ml-3">
                     <div className="text-sm text-gray-600">Total Revenue</div>
-                    <div className="text-2xl font-bold">${analytics.totalRevenue.toLocaleString()}</div>
+                    <div className="text-2xl font-bold">${(analytics.totalRevenue || 0).toLocaleString()}</div>
                   </div>
                 </div>
               </div>
@@ -96,7 +96,7 @@ export default function AnalyticsTab() {
                   <ShoppingCart className="w-8 h-8 text-blue-600" />
                   <div className="ml-3">
                     <div className="text-sm text-gray-600">Total Orders</div>
-                    <div className="text-2xl font-bold">{analytics.totalOrders}</div>
+                    <div className="text-2xl font-bold">{analytics.totalOrders || 0}</div>
                   </div>
                 </div>
               </div>
@@ -106,7 +106,7 @@ export default function AnalyticsTab() {
                   <Users className="w-8 h-8 text-purple-600" />
                   <div className="ml-3">
                     <div className="text-sm text-gray-600">Total Customers</div>
-                    <div className="text-2xl font-bold">{analytics.totalCustomers}</div>
+                    <div className="text-2xl font-bold">{analytics.totalCustomers || 0}</div>
                   </div>
                 </div>
               </div>
@@ -116,19 +116,19 @@ export default function AnalyticsTab() {
             <div className="border border-gray-200 rounded-lg p-4">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Orders</h3>
               <div className="space-y-3">
-                {analytics.recentOrders.map((order) => (
+                {(analytics.recentOrders || []).map((order) => (
                   <div key={order.id} className="flex justify-between items-center border-b border-gray-100 pb-3 last:border-0 last:pb-0">
                     <div>
-                      <div className="font-medium">{order.customer}</div>
-                      <div className="text-sm text-gray-600">{order.date}</div>
+                      <div className="font-medium">{order.customer || 'Unknown Customer'}</div>
+                      <div className="text-sm text-gray-600">{order.date || 'Unknown Date'}</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-medium">${order.amount}</div>
+                      <div className="font-medium">${(order.amount || 0).toFixed(2)}</div>
                       <div className={`text-sm ${
-                        order.status === 'completed' ? 'text-green-600' : 
+                        order.status === 'completed' ? 'text-green-600' :
                         order.status === 'pending' ? 'text-yellow-600' : 'text-blue-600'
                       }`}>
-                        {order.status}
+                        {order.status || 'Unknown'}
                       </div>
                     </div>
                   </div>
@@ -140,10 +140,10 @@ export default function AnalyticsTab() {
             <div className="border border-gray-200 rounded-lg p-4">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Top Selling Products</h3>
               <div className="space-y-3">
-                {analytics.topProducts.map((product, index) => (
+                {(analytics.topProducts || []).map((product, index) => (
                   <div key={index} className="flex justify-between items-center">
-                    <div className="font-medium">{product.name}</div>
-                    <div className="text-gray-600">{product.sales} sales</div>
+                    <div className="font-medium">{product.name || 'Unknown Product'}</div>
+                    <div className="text-gray-600">{(product.sales || 0)} sales</div>
                   </div>
                 ))}
               </div>

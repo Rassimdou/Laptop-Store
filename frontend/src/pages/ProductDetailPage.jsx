@@ -85,7 +85,7 @@ export default function ProductDetailPage() {
     brand: product.brand,
     price: product.price,
     originalPrice: product.originalPrice || product.price,
-    images: product.images || ["/placeholder.svg"],
+    images: product.imageUrl ? [product.imageUrl] : ["/placeholder.svg"],
     rating: product.rating || 4.5,
     reviews: product.reviews || 0,
     category: product.model,

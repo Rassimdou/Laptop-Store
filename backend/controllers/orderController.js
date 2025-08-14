@@ -81,7 +81,7 @@ export const createOrder = async (req, res) => {
 export const getOrderById = async (req, res) => {
     try {
         const orderId = req.params.id;
-        const orderDetails = await Order.findById(orderId).populate('products.product');
+        const orderDetails = await Order.findById(orderId).populate('products.productId');
         
         if (!orderDetails) {
             return res.status(404).json({ message: 'Order not found' });
@@ -98,7 +98,7 @@ export const getOrderById = async (req, res) => {
 export const getUserOrders = async (req, res) => {
   try{
     const clientID = req.client._id;
-    const userOrders = await Order.find({ client: clientID }).populate('products.product'); 
+    const userOrders = await Order.find({ clientId: clientID }).populate('products.productId');
     res.status(200).json({ orders: userOrders });
   
 
@@ -125,21 +125,24 @@ export const updateOrderStatus = async (req, res) => {
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: 'Invalid status' });
     }
-    const updatedOrder = await order.findByIdAndUpdate(
+    const updatedOrder = await Order.findByIdAndUpdate(
       orderID,
       { status },
       { new: true }
     );
 
+    if (!updatedOrder) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
 
-    
+    res.status(200).json({
+      message: 'Order status updated successfully',
+      order: updatedOrder
+    });
   } catch (error) {
     console.error('Error updating order status:', error);
     res.status(500).json({ message: 'Internal server error' });
-    
   }
-
-
 };
 
 export const getAnalyticsData = async (req, res) => {

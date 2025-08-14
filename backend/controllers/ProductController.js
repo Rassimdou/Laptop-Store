@@ -2,10 +2,28 @@ import Product from "../models/Product.js";
 
 export const getAllProducts = async (req, res) => {
     try {
-        const allProducts = await Product.find();  
+        const allProducts = await Product.find();
         
         
         return res.status(200).json(allProducts);
+        
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+}
+
+export const getProductsByModel = async (req, res) => {
+    const { model } = req.query;
+    
+    try {
+        let products;
+        if (model) {
+            products = await Product.find({ model: new RegExp(model, 'i') });
+        } else {
+            products = await Product.find();
+        }
+        
+        return res.status(200).json(products);
         
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });

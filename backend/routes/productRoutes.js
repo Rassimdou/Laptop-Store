@@ -5,7 +5,8 @@ import {
   addProduct,
   updateProduct,
   deleteProduct,
-  getLatestProducts
+  getLatestProducts,
+  getProductsByModel
 } from '../controllers/productController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
@@ -13,6 +14,7 @@ const router = express.Router();
 
 // Public routes
 router.get('/', getAllProducts);
+router.get('/filter', getProductsByModel);
 router.get('/latest', getLatestProducts);
 router.get('/:id', getProductById);
 
