@@ -1,15 +1,239 @@
-"use client"
+import { useEffect, useState, useRef } from "react"
 import { motion } from "framer-motion"
+import { Link } from "react-router-dom"
+import { Button } from "../components/ui/button"
 import { Card, CardContent } from "../components/ui/card"
 import { Badge } from "../components/ui/badge"
-import { Shield, Truck, Zap } from "lucide-react"
-import Header from "../components/layout/Header"
-import Footer from "../components/layout/footer"
+import { Shield, Truck, Zap, Menu, X, User } from "lucide-react"
+import Footer from "../components/layout/Footer"
 
 export default function AboutPage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [user, setUser] = useState(null)
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const userMenuRef = useRef(null)
+
+  useEffect(() => {
+    // Check for user in localStorage
+    const storedUser = localStorage.getItem("user")
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser))
+      } catch (e) {
+        console.error("Error parsing user data:", e)
+      }
+    }
+
+    // Close user menu when clicking outside
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    setUser(null)
+    setIsUserMenuOpen(false)
+    // Redirect to home page
+    window.location.href = "/"
+  }
+
   return (
     <div className="min-h-screen bg-gray-900">
-      <Header />
+      {/* Navigation - HomePage style */}
+      <nav className="sticky top-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-r from-red-600 to-red-500 rounded-lg flex items-center justify-center">
+                <Zap className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold bg-gradient-to-r from-red-500 to-red-400 bg-clip-text text-transparent">
+                LaptopHub
+              </span>
+            </div>
+
+            <div className="hidden md:flex items-center space-x-8">
+              <Link to="/" className="text-gray-300 hover:text-red-400 transition-colors">
+                Home
+              </Link>
+              <Link to="/products" className="text-gray-300 hover:text-red-400 transition-colors">
+                Products
+              </Link>
+              <Link to="/about" className="text-gray-300 hover:text-red-400 transition-colors">
+                About
+              </Link>
+              {user && user.role === "admin" && (
+                <Link to="/admin" className="text-gray-300 hover:text-red-400 transition-colors">
+                  Admin
+                </Link>
+              )}
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <div className="hidden md:flex space-x-2">
+                {user ? (
+                  <div className="relative" ref={userMenuRef}>
+                    <Button
+                      variant="ghost"
+                      className="flex items-center space-x-2 text-gray-300 hover:text-red-400 hover:bg-gray-800"
+                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    >
+                      <User className="w-5 h-5" />
+                      <span>{user.name}</span>
+                    </Button>
+                    {isUserMenuOpen && (
+                      <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-700">
+                        <Link
+                          to="/my-orders"
+                          className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-red-400"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          My Orders
+                        </Link>
+                        {user.role === "admin" && (
+                          <Link
+                            to="/admin"
+                            className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-red-400"
+                            onClick={() => setIsUserMenuOpen(false)}
+                          >
+                            Admin Dashboard
+                          </Link>
+                        )}
+                        <button
+                          onClick={handleLogout}
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-red-400"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <Link to="/login">
+                      <Button className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white">
+                        Login
+                      </Button>
+                    </Link>
+                    <Link to="/register">
+                      <Button
+                        variant="outline"
+                        className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white bg-transparent"
+                      >
+                        Register
+                      </Button>
+                    </Link>
+                  </>
+                )}
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden text-gray-300 hover:text-red-400 hover:bg-gray-800"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu - Header style (dropdown) */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-gray-800 border-t border-gray-700">
+            <div className="px-4 py-4 space-y-3">
+              {/* Navigation Links */}
+              <Link
+                to="/"
+                className="block py-2 text-base font-medium text-gray-300 hover:text-white transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Home
+              </Link>
+
+              <Link
+                to="/products"
+                className="block py-2 text-base font-medium text-gray-300 hover:text-white transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Products
+              </Link>
+
+              <Link
+                to="/about"
+                className="block py-2 text-base font-medium text-gray-300 hover:text-white transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                About
+              </Link>
+
+              {/* User Actions */}
+              {user ? (
+                <>
+                  <div className="border-t border-gray-700 pt-3 mt-3">
+                    <div className="flex items-center py-2">
+                      <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center">
+                        <User className="w-4 h-4 text-gray-300" />
+                      </div>
+                      <span className="ml-3 text-base font-medium text-white">{user.name}</span>
+                    </div>
+                  </div>
+
+                  <Link
+                    to="/my-orders"
+                    className="block py-2 text-base font-medium text-gray-300 hover:text-white transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    My Orders
+                  </Link>
+
+                  {user.role === "admin" && (
+                    <Link
+                      to="/admin"
+                      className="block py-2 text-base font-medium text-gray-300 hover:text-white transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Admin Dashboard
+                    </Link>
+                  )}
+
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-slate-600 transition-colors"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <div className="border-t border-gray-700 pt-3 mt-3 space-y-2">
+                  <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-base font-medium text-gray-300 hover:text-white hover:bg-slate-700"
+                    >
+                      Login
+                    </Button>
+                  </Link>
+                  <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
+                    <Button className="w-full text-base font-medium bg-red-600 hover:bg-red-700 text-white">
+                      Register
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </nav>
 
       <main>
         {/* Hero Section */}
@@ -99,7 +323,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Why Choose Us Section (reused from HomePage for consistency) */}
+        {/* Why Choose Us Section */}
         <section className="py-16 bg-gray-800 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="text-center space-y-4 mb-12">
@@ -142,7 +366,6 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
-
       <Footer />
     </div>
   )

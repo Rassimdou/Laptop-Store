@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState, useRef } from "react"
 import { Link } from "react-router-dom"
 import { Button } from "../components/ui/button"
@@ -63,7 +61,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-900">
-      {/* Navigation */}
+      {/* Navigation - same style as before */}
       <nav className="sticky top-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -92,16 +90,6 @@ export default function HomePage() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative text-gray-300 hover:text-red-400 hover:bg-gray-800"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                <Badge className="absolute -top-2 -right-2 w-5 h-5 rounded-full p-0 flex items-center justify-center text-xs bg-red-600 text-white">
-                  3
-                </Badge>
-              </Button>
               <div className="hidden md:flex space-x-2">
                 {user ? (
                   <div className="relative" ref={userMenuRef}>
@@ -172,74 +160,89 @@ export default function HomePage() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="fixed inset-0 bg-gray-900 z-[999] p-4 pt-16 overflow-y-auto">
-            <div className="px-6 space-y-2">
+          <div className="md:hidden bg-slate-800 border-t border-gray-700">
+            <div className="px-4 py-4 space-y-3">
+              {/* Navigation Links */}
               <Link
                 to="/"
-                className="block text-gray-300 hover:text-red-400 transition-colors py-2"
+                className="block py-2 text-base font-medium text-gray-300 hover:text-white transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Home
               </Link>
+
               <Link
                 to="/products"
-                className="block text-gray-300 hover:text-red-400 transition-colors py-2"
+                className="block py-2 text-base font-medium text-gray-300 hover:text-white transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Products
               </Link>
+
               <Link
                 to="/about"
-                className="block text-gray-300 hover:text-red-400 transition-colors py-2"
+                className="block py-2 text-base font-medium text-gray-300 hover:text-white transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 About
               </Link>
+
+              {/* User Actions */}
               {user ? (
                 <>
+                  <div className="border-t border-gray-700 pt-3 mt-3">
+                    <div className="flex items-center py-2">
+                      <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center">
+                        <User className="w-4 h-4 text-gray-300" />
+                      </div>
+                      <span className="ml-3 text-base font-medium text-white">{user.name}</span>
+                    </div>
+                  </div>
+
                   <Link
                     to="/my-orders"
-                    className="block text-gray-300 hover:text-red-400 transition-colors py-2"
+                    className="block py-2 text-base font-medium text-gray-300 hover:text-white transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     My Orders
                   </Link>
+
                   {user.role === "admin" && (
                     <Link
                       to="/admin"
-                      className="block text-gray-300 hover:text-red-400 transition-colors py-2"
+                      className="block py-2 text-base font-medium text-gray-300 hover:text-white transition-colors"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       Admin Dashboard
                     </Link>
                   )}
+
                   <button
                     onClick={() => {
                       handleLogout()
                       setMobileMenuOpen(false)
                     }}
-                    className="block w-full text-left text-gray-300 hover:text-red-400 transition-colors py-2"
+                    className="block w-full text-left py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-slate-600 transition-colors"
                   >
                     Logout
                   </button>
                 </>
               ) : (
-                <>
-                  <Link
-                    to="/login"
-                    className="block text-gray-300 hover:text-red-400 transition-colors py-2"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Login
+                <div className="border-t border-gray-700 pt-3 mt-3 space-y-2">
+                  <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-base font-medium text-gray-300 hover:text-white hover:bg-slate-700"
+                    >
+                      Login
+                    </Button>
                   </Link>
-                  <Link
-                    to="/register"
-                    className="block text-gray-300 hover:text-red-400 transition-colors py-2"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Register
+                  <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
+                    <Button className="w-full text-base font-medium bg-red-600 hover:bg-red-700 text-white">
+                      Register
+                    </Button>
                   </Link>
-                </>
+                </div>
               )}
             </div>
           </div>
