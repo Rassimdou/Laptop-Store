@@ -6,7 +6,6 @@ import { Badge } from "../components/ui/badge"
 import { ShoppingCart, Star, Heart, Share2, Truck, Shield, RotateCcw, Phone, Loader2 } from 'lucide-react'
 import axios from 'axios'
 
-
 export default function ProductDetailPage() {
   const { id } = useParams()
   const [product, setProduct] = useState(null)
@@ -14,7 +13,6 @@ export default function ProductDetailPage() {
   const [error, setError] = useState(null)
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
-  const [activeTab, setActiveTab] = useState("specs")
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -22,7 +20,6 @@ export default function ProductDetailPage() {
         setLoading(true)
         const response = await axios.get(`http://localhost:5000/api/products/${id}`)
         setProduct(response.data)
-        // Set the first image as selected by default
         if (response.data.images && response.data.images.length > 0) {
           setSelectedImage(0)
         }
@@ -76,7 +73,6 @@ export default function ProductDetailPage() {
     )
   }
 
-  // Use product data instead of mock data
   const laptop = {
     id: product._id,
     name: product.name,
@@ -84,14 +80,11 @@ export default function ProductDetailPage() {
     price: product.price,
     originalPrice: product.originalPrice || product.price,
     images: product.imageUrl ? [product.imageUrl] : ["/placeholder.svg"],
-    rating: product.rating || 4.5,
-    reviews: product.reviews || 0,
-    category: product.model,
+
+    model: product.model,
     inStock: product.stock > 0,
     stockCount: product.stock,
     description: product.description,
-    specs: product.specs || {},
-    features: product.features || [],
   }
 
   return (
@@ -161,25 +154,23 @@ export default function ProductDetailPage() {
               <h1 className="text-3xl font-bold text-white">{laptop.name}</h1>
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-5 h-5 ${
-                        i < Math.floor(laptop.rating) ? "text-yellow-400 fill-current" : "text-gray-600"
-                      }`}
-                    />
-                  ))}
+              
                 </div>
                 <span className="text-lg font-medium text-white">{laptop.rating}</span>
-                <span className="text-gray-400">({laptop.reviews} reviews)</span>
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="flex items-center space-x-4">
                 <span className="text-4xl font-bold text-white">${laptop.price}</span>
-                <span className="text-xl text-gray-500 line-through">${laptop.originalPrice}</span>
-                <Badge className="bg-green-600 text-white">Save ${laptop.originalPrice - laptop.price}</Badge>
+                {laptop.originalPrice > laptop.price && (
+                  <>
+                    <span className="text-xl text-gray-500 line-through">${laptop.originalPrice}</span>
+                    <Badge className="bg-green-600 text-white">
+                      Save ${(laptop.originalPrice - laptop.price).toFixed(2)}
+                    </Badge>
+                  </>
+                )}
               </div>
 
               <div className="flex items-center space-x-2">
@@ -268,97 +259,6 @@ export default function ProductDetailPage() {
                 <div className="text-xs text-gray-400">No questions asked</div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Product Details Tabs */}
-        <div className="mt-16">
-          <div className="w-full">
-            <div className="flex space-x-1 bg-gray-800 p-1 rounded-lg mb-8">
-              {["specs", "features", "reviews"].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-                    activeTab === tab
-                      ? "bg-red-600 text-white shadow-sm"
-                      : "text-gray-400 hover:text-white hover:bg-gray-700"
-                  }`}
-                >
-                  {tab === "specs" && "Specifications"}
-                  {tab === "features" && "Features"}
-                  {tab === "reviews" && "Reviews"}
-                </button>
-              ))}
-            </div>
-
-            {activeTab === "specs" && (
-              <Card className="bg-gray-800 border-gray-700">
-                <CardContent className="p-8">
-                  <h3 className="text-2xl font-bold mb-6 text-white">Technical Specifications</h3>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {Object.entries(laptop.specs).map(([key, value]) => (
-                      <div key={key} className="flex justify-between py-3 border-b border-gray-700">
-                        <span className="font-medium text-gray-300 capitalize">
-                          {key.replace(/([A-Z])/g, " $1").trim()}
-                        </span>
-                        <span className="text-white">{value}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {activeTab === "features" && (
-              <Card className="bg-gray-800 border-gray-700">
-                <CardContent className="p-8">
-                  <h3 className="text-2xl font-bold mb-6 text-white">Key Features</h3>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {laptop.features.map((feature, index) => (
-                      <div key={index} className="flex items-start space-x-3">
-                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0" />
-                        <span className="text-gray-300">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {activeTab === "reviews" && (
-              <Card className="bg-gray-800 border-gray-700">
-                <CardContent className="p-8">
-                  <h3 className="text-2xl font-bold mb-6 text-white">Customer Reviews</h3>
-                  <div className="space-y-6">
-                    {[1, 2, 3].map((review) => (
-                      <div key={review} className="border-b border-gray-700 pb-6">
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white font-medium">
-                              U{review}
-                            </div>
-                            <div>
-                              <div className="font-medium text-white">User {review}</div>
-                              <div className="flex items-center">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                          <span className="text-sm text-gray-400">2 days ago</span>
-                        </div>
-                        <p className="text-gray-300">
-                          Excellent laptop! The performance is outstanding and the build quality is top-notch. Highly
-                          recommend for professional use.
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
           </div>
         </div>
       </div>

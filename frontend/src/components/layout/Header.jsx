@@ -6,6 +6,7 @@ import { Button } from "../ui/button"
 import { Badge } from "../ui/badge"
 import { ShoppingCart, Zap, Menu, X, User, Package } from "lucide-react"
 
+
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [user, setUser] = useState(null)
@@ -141,84 +142,85 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 bg-gray-900 z-50 p-4 pt-16 overflow-y-auto md:hidden">
-          <div className="px-6 space-y-2">
+        <div className="md:hidden bg-gray-900 border-t border-gray-800">
+          <div className="px-4 py-4 space-y-3">
+            {/* Navigation Links */}
             <Link
               to="/"
-              className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-red-400 hover:bg-gray-800 rounded-md"
+              className="block py-2 text-base font-medium text-gray-300 hover:text-red-400 transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Home
             </Link>
+
             <Link
               to="/products"
-              className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-red-400 hover:bg-gray-800 rounded-md"
+              className="block py-2 text-base font-medium text-red-400 transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Products
             </Link>
+
             <Link
               to="/about"
-              className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-red-400 hover:bg-gray-800 rounded-md"
+              className="block py-2 text-base font-medium text-gray-300 hover:text-red-400 transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               About
             </Link>
 
+            {/* User Actions */}
             {user ? (
-              <div className="pt-4 pb-2 border-t border-gray-700">
-                <div className="flex items-center px-3 py-2">
-                  <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center">
-                    <User className="w-5 h-5 text-gray-300" />
-                  </div>
-                  <div className="ml-3">
-                    <div className="text-sm font-medium text-white">{user.name}</div>
-                    <div className="text-xs text-gray-400">{user.email || "user@example.com"}</div>
+              <>
+                <div className="border-t border-gray-700 pt-3 mt-3">
+                  <div className="flex items-center py-2">
+                    <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center">
+                      <User className="w-4 h-4 text-gray-300" />
+                    </div>
+                    <span className="ml-3 text-base font-medium text-white">{user.name}</span>
                   </div>
                 </div>
-                <div className="mt-3 space-y-1">
+
+                <Link
+                  to="/my-orders"
+                  className="block py-2 text-base font-medium text-gray-300 hover:text-red-400 transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  My Orders
+                </Link>
+
+                {user.role === "admin" && (
                   <Link
-                    to="/my-orders"
-                    className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-red-400 hover:bg-gray-800 rounded-md"
+                    to="/admin"
+                    className="block py-2 text-base font-medium text-gray-300 hover:text-red-400 transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    My Orders
+                    Admin Dashboard
                   </Link>
-                  {user.role === "admin" && (
-                    <Link
-                      to="/admin"
-                      className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-red-400 hover:bg-gray-800 rounded-md"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Admin Dashboard
-                    </Link>
-                  )}
-                  <button
-                    onClick={() => {
-                      handleLogout()
-                      setMobileMenuOpen(false)
-                    }}
-                    className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-red-400 hover:bg-gray-800 rounded-md"
-                  >
-                    Logout
-                  </button>
-                </div>
-              </div>
+                )}
+
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left py-2 text-base font-medium text-gray-300 hover:text-red-400 transition-colors"
+                >
+                  Logout
+                </button>
+              </>
             ) : (
-              <div className="pt-4 border-t border-gray-700">
-                <div className="grid grid-cols-2 gap-2">
-                  <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                    <Button
-                      variant="outline"
-                      className="w-full border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white bg-transparent"
-                    >
-                      Login
-                    </Button>
-                  </Link>
-                  <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
-                    <Button className="w-full bg-red-600 hover:bg-red-700 text-white">Register</Button>
-                  </Link>
-                </div>
+              <div className="border-t border-gray-700 pt-3 mt-3 space-y-2">
+                <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-base font-medium text-gray-300 hover:text-red-400 hover:bg-gray-800"
+                  >
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
+                  <Button className="w-full text-base font-medium bg-red-600 hover:bg-red-700 text-white">
+                    Register
+                  </Button>
+                </Link>
               </div>
             )}
           </div>
