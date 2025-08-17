@@ -5,7 +5,7 @@ export const protect = async (req, res, next) => {
   try {
     let token;
     
-    // 1. Get token from header
+    // Get token from header
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];
     }
@@ -14,17 +14,17 @@ export const protect = async (req, res, next) => {
       return res.status(401).json({ message: 'Not authorized, no token' });
     }
     
-    // 2. Verify token
+    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    // 3. Get client from token
+    //  Get client from token
     const client = await Client.findById(decoded.id);
     
     if (!client) {
       return res.status(401).json({ message: 'Not authorized, client not found' });
     }
     
-    // 4. Attach client to request
+    //  Attach client to request
     req.client = client;
     next();
   } catch (error) {

@@ -18,7 +18,7 @@ router.get('/filter', getProductsByModel);
 router.get('/latest', getLatestProducts);
 router.get('/:id', getProductById);
 
-// Admin protected routes
+// Admin routes
 router.use(protect, admin);
 router.post('/', addProduct);
 router.put('/:id', updateProduct);

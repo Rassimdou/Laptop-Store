@@ -4,7 +4,7 @@ import express from 'express';
 const router = express.Router();
 
 
-router.get('/' , getAllClients); // Get all clients
+router.get('/' , getAllClients); 
 
 
 export default router;

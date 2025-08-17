@@ -12,11 +12,11 @@ import adminAuth from '../middleware/adminAuth.js';
 
 const router = express.Router();
 
-// User must be authenticated for user order routes
+// auth needed for all routes
 router.post('/', protect, createOrder);
 router.get('/my-orders', protect, getUserOrders);
 
-// Admin-only routes
+// Admin brk routes
 router.get('/', adminAuth, getAllOrders);
 router.get('/analytics', adminAuth, getAnalyticsData);
 router.get('/:id', adminAuth, getOrderById);

@@ -7,23 +7,23 @@ import Client from '../models/Client.js';
 dotenv.config();
 const router = express.Router();
 
-// Register a new client
+
 export  const register = async (req, res) => {
   const { name, email, phone, password } = req.body;
 
-  // Basic input validation
+ 
   if (!name || !email || !phone || !password) {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
   try {
-    // Check if email already exists
+    
     const existingClient = await Client.findOne({ email });
     if (existingClient) {
       return res.status(400).json({ message: 'Email already in use' });
     }
 
-    // Hash password
+   
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Save new user
@@ -74,7 +74,7 @@ export const login = async (req, res) => {
       { expiresIn: '24h' }
     );
 
-    // Optionally set the token as a cookie (recommended for security)
+    //  set the token as a cookie mli7a lel security
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -100,7 +100,7 @@ export const login = async (req, res) => {
   }
 };
 
-// Logout client
+
 export const logout = (req, res) => {
   try {
     res.clearCookie('token');
