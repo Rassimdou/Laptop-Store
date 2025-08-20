@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import mongoose, { connect, mongo } from 'mongoose';
+import mongoose from 'mongoose';
 import { connectDB } from './config/db.js';
 import cookieParser from 'cookie-parser';
 
@@ -16,19 +16,17 @@ dotenv.config();
 
 const app = express();
 
-// CORS Configuration - FIXED
+// CORS Configuration - Simplified
 app.use(cors({
     origin: [
         'https://laptop-store-w475.vercel.app',
-        'http://localhost:5173' // For local development
+        'http://localhost:3000'
     ],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
-// Handle preflight requests
-app.options('*', cors());
 
 // Body parsing
 app.use(bodyParser.json());
