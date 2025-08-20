@@ -41,7 +41,7 @@ export default function HomePage() {
   useEffect(() => {
     const featuredLaptops = async () => {
       try {
-        const response = await axios.get("https://laptop-store-1-q41h.onrender.com/products/latest") // Adjust the endpoint as needed
+        const response = await axios.get("https://laptop-store-1-q41h.onrender.com/api/products/latest") // Adjust the endpoint as needed
         setFeaturedLaptops(response.data)
       } catch (error) {
         console.error("Error fetching featured laptops:", error)

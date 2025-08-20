@@ -159,7 +159,7 @@ export default function ProductsTab() {
         stock: Number.parseInt(editProduct.stock),
       }
 
-      const response = await axios.put(`hhttps://laptop-store-1-q41h.onrender.com/products/${editProduct._id}`, productData, {
+      const response = await axios.put(`https://laptop-store-1-q41h.onrender.com/api/products/${editProduct._id}`, productData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

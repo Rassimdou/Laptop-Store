@@ -24,7 +24,7 @@ export default function CustomersTab() {
           return
         }
 
-        const response = await axios.get("http://localhost:5000/api/clients", {
+        const response = await axios.get("https://laptop-store-1-q41h.onrender.com/api/clients", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

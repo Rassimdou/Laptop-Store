@@ -26,13 +26,13 @@ export default function AnalyticsTab() {
 
         // Fetch each metric separately
         const [amountRes, ordersRes, usersRes] = await Promise.all([
-          axios.get("https://laptop-store-1-q41h.onrender.com/analytics/total-amount", {
+          axios.get("https://laptop-store-1-q41h.onrender.com/api/analytics/total-amount", {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("https://laptop-store-1-q41h.onrender.com/analytics/total-orders", {
+          axios.get("https://laptop-store-1-q41h.onrender.com/api/analytics/total-orders", {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("https://laptop-store-1-q41h.onrender.com/analytics/total-users", {
+          axios.get("https://laptop-store-1-q41h.onrender.com/api/analytics/total-users", {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ])

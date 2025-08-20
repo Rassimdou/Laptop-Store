@@ -65,7 +65,7 @@ export default function AdminPage() {
       }
 
       const response = await axios.patch(
-        `https://laptop-store-1-q41h.onrender.com/orders/${orderId}/status`,
+        `https://laptop-store-1-q41h.onrender.com/api/orders/${orderId}/status`,
         { status: newStatus },
         {
           headers: {

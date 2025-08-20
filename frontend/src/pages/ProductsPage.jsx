@@ -26,8 +26,8 @@ export default function ProductsPage() {
         // If a model is selected, filter by that model, otherwise fetch all products
         const url =
           selectedModel && selectedModel !== "all"
-            ? `https://laptop-store-1-q41h.onrender.com/products/filter?model=${selectedModel}`
-            : "https://laptop-store-1-q41h.onrender.com/products"
+            ? `https://laptop-store-1-q41h.onrender.com/api/products/filter?model=${selectedModel}`
+            : "https://laptop-store-1-q41h.onrender.com/api/products"
 
         const response = await axios.get(url)
         console.log("Full response:", response)

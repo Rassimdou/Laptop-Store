@@ -36,7 +36,7 @@ export default function MyOrdersPage() {
           return
         }
 
-        const response = await axios.get("https://laptop-store-1-q41h.onrender.com/orders/my-orders", {
+        const response = await axios.get("https://laptop-store-1-q41h.onrender.com/api/orders/my-orders", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

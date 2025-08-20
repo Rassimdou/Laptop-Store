@@ -38,7 +38,7 @@ export default function RegisterPage() {
 
     setIsSubmitting(true)
     try {
-      const response = await axios.post("https://laptop-store-1-q41h.onrender.com/auth/register", {
+      const response = await axios.post("https://laptop-store-1-q41h.onrender.com/api/auth/register", {
         name,
         email,
         phone,
