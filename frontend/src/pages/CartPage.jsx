@@ -158,7 +158,7 @@ export default function CartPage() {
 
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("https://laptop-store-1-q41h.onrender.com/products")
+        const response = await axios.get("https://laptop-store-1-q41h.onrender.com/api/products")
         setProducts(response.data)
       } catch (err) {
         console.error("Failed to load products:", err)
