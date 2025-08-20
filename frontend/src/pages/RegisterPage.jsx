@@ -5,7 +5,7 @@ import { Input } from '../components/ui/input'
 import { Button } from '../components/ui/button'
 import { Mail, Lock, User, Phone, Eye, EyeOff } from 'lucide-react'
 import Header from '../components/layout/Header'
-import Footer from '../components/layout/footer'
+import Footer from '../components/layout/Footer'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
