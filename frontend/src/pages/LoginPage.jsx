@@ -25,7 +25,7 @@ export default function LoginPage() {
     setError("")
 
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/login", { email, password })
+      const response = await axios.post("https://laptop-store-1-q41h.onrender.com/auth/login", { email, password })
       const { token, client } = response.data
 
       localStorage.setItem("token", token)

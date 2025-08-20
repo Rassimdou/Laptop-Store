@@ -25,7 +25,7 @@ export default function ProductsTab() {
           return
         }
 
-        const response = await axios.get("http://localhost:5000/api/products", {
+        const response = await axios.get("https://laptop-store-1-q41h.onrender.com/api/products", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -56,7 +56,7 @@ export default function ProductsTab() {
         return
       }
 
-      await axios.delete(`http://localhost:5000/api/products/${productId}`, {
+      await axios.delete(`https://laptop-store-1-q41h.onrender.com/api/products/${productId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -107,7 +107,7 @@ export default function ProductsTab() {
         stock: Number.parseInt(newProduct.stock),
       }
 
-      const response = await axios.post("http://localhost:5000/api/products", productData, {
+      const response = await axios.post("https://laptop-store-1-q41h.onrender.com/api/products", productData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -159,7 +159,7 @@ export default function ProductsTab() {
         stock: Number.parseInt(editProduct.stock),
       }
 
-      const response = await axios.put(`http://localhost:5000/api/products/${editProduct._id}`, productData, {
+      const response = await axios.put(`hhttps://laptop-store-1-q41h.onrender.com/products/${editProduct._id}`, productData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

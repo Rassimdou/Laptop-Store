@@ -18,7 +18,7 @@ export default function ProductDetailPage() {
     const fetchProduct = async () => {
       try {
         setLoading(true)
-        const response = await axios.get(`http://localhost:5000/api/products/${id}`)
+        const response = await axios.get(`https://laptop-store-1-q41h.onrender.com/products/${id}`)
         setProduct(response.data)
         if (response.data.images && response.data.images.length > 0) {
           setSelectedImage(0)

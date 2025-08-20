@@ -33,7 +33,7 @@ export default function AdminPage() {
           return
         }
 
-        const response = await axios.get("http://localhost:5000/api/orders", {
+        const response = await axios.get("https://laptop-store-1-q41h.onrender.com/api/orders", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -65,7 +65,7 @@ export default function AdminPage() {
       }
 
       const response = await axios.patch(
-        `http://localhost:5000/api/orders/${orderId}/status`,
+        `https://laptop-store-1-q41h.onrender.com/orders/${orderId}/status`,
         { status: newStatus },
         {
           headers: {
