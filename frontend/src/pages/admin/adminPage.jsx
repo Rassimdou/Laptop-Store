@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Button } from "../../components/ui/button"
-import StatsCards from "./StatsCards.jsx"
+
 import TabNavigation from "./TabNavigation.jsx"
 import OrdersTab from "./OrdersTab.jsx"
 import ProductsTab from "./ProductsTab.jsx"
@@ -127,7 +127,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {!loading && !error && <StatsCards />}
+        
 
         {selectedOrder && (
           <OrderDetailModal

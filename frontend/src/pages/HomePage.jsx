@@ -267,15 +267,7 @@ export default function HomePage() {
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>
-              <Link to="/products">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="px-8 border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white bg-transparent"
-                >
-                  View Catalog
-                </Button>
-              </Link>
+              
             </div>
           </div>
         </div>
