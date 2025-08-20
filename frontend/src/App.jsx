@@ -4,7 +4,7 @@ import HomePage from "./pages/HomePage"
 import ProductsPage from "./pages/ProductsPage"
 import ProductDetailPage from "./pages/ProductDetailPage"
 import CartPage from "./pages/CartPage"
-import AdminPage from "./pages/admin/AdminPage"
+import AdminPage from "./pages/admin/adminPage.jsx"
 import AboutPage from "./pages/AboutPage"
 import LoginPage from "./pages/LoginPage" // Import LoginPage
 import RegisterPage from "./pages/RegisterPage" // Import RegisterPage
